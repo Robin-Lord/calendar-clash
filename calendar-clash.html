@@ -1,0 +1,2132 @@
+<style>
+#game-board {
+    display: flex;
+    justify-content: space-around;
+    height: 60vh; /* Adjust this based on your layout */
+    position: relative;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.column-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 12%; /* Adjust this based on your layout */
+}
+
+.day-label {
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.column {
+    background-color: #ddd;
+    height: 100%;
+    position: relative;
+    border: 1px solid black;
+    /* overflow: hidden; */
+    width: 100%;
+}
+
+
+.time-slots {
+    position: absolute;
+    /* left: -60px; */
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-size: 12px;
+    color: #555;
+    pointer-events: none;
+}
+
+.time-slot {
+    height: 10%;
+    display: flex;
+    padding-right: 5px;
+    pointer-events: none;
+}
+
+.pre-hours {
+    background-color: lightgray !important;
+}
+
+.lunch-hours {
+    background-color: lightgray !important;
+}
+
+.post-hours {
+    background-color: lightgray !important;
+}
+
+
+.horizontal-line {
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #999;
+    top: 40px;
+    z-index: -1;
+}
+
+.block {
+    position: absolute;
+    width: 100%; /* Adjust this based on your layout */
+    background-color: #e3b3cc; /* Example pastel color */
+    border-radius: 5px; /* Add rounded corners */
+    overflow-y: hidden;
+}
+
+.triple-meeting::before,
+.triple-meeting::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2%; /* Change this to adjust the thickness of the lines */
+    background: white;
+}
+
+.triple-meeting::before {
+    left: 33%;
+}
+
+.triple-meeting::after {
+    left: 66%;
+}
+
+
+.same-day-follow-up::before,
+.same-day-follow-up::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2%; /* Change this to adjust the thickness of the lines */
+    background: white;
+}
+
+.same-day-follow-up::before {
+    top: 48%;
+}
+
+.same-day-follow-up::after {
+    top: 52%;
+}
+
+
+
+
+.dragging {
+    position: absolute !important;
+    width: 50vw !important;
+    box-sizing: border-box;
+    box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.2); /* Horizontal shadow, vertical shadow, blur, color */
+}
+
+
+
+
+
+
+.working-hours {
+    background-color: white;
+}
+
+.working-hours .time-slots > .time-slot:nth-child(-n+3) {
+    background-color: inherit; /* Restore default background color for time slots before 9am */
+}
+
+.inexorable-passage-of-time {
+    position: absolute;
+    width: 100%;
+    background-color: rgba(128, 128, 128, 0.8); /* semi-transparent grey */
+    z-index: 100;
+    pointer-events: none;
+    top: 0;
+    transition-timing-function: linear;
+    transition-duration: 0.2s;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    background-color: rgba(128, 128, 128, 0.5); /* semi-transparent grey */
+    z-index: 10;
+}
+
+.overlay-before {
+    height: 20%; /* 8am is at 1/3 of the day */
+    top: 0;
+    pointer-events: none;
+}
+
+.overlay-after {
+    height: 27%; /* 4pm is at 2/3 of the day */
+    bottom: 0;
+    pointer-events: none;
+}
+
+
+
+
+#incoming-blocks {
+    width: 12%;
+    height: 100%;
+    position: relative;
+    border: 1px solid black; /* added border for visibility */
+    background-color: #eee; /* added background for visibility */
+}
+
+
+#incoming-blocks > div {
+    display: block;
+    margin-bottom: 10px;
+}
+
+
+/* Counters and progress bars */
+
+#counters {
+    position: absolute;
+    display: block;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+}
+
+.visible-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #4caf50;
+    border-radius: 5px;
+    transition: width 0.5s;
+}
+
+.alert-progress-bar{
+    background-color: #af4c4c !important;
+}
+
+#fast-forward {
+    display: inline-block;
+    width: 50%;
+    margin: 20px auto;
+    padding: 10px 0;
+    background-color: #007BFF; /* You can choose your own color */
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Shadow for 3D effect */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Animation for hover effect */
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+/ Edge */
+    user-select: none;          /* Standard syntax */
+}
+
+#fast-forward:hover {
+    background-color: #0056b3; /* Darker shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarges button on hover */
+}
+
+#fast-forward:active {
+    transform: scale(0.95); /* Slightly shrinks button on click */
+}
+
+
+
+/* Weekly recurring */
+
+
+
+/* Heavy meetings */
+.heavy {
+    background-color: black !important;
+    color: white !important;
+}
+
+
+/* Initial overlay */
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 9999;
+}
+
+#start-button {
+    font-size: 2em;
+    padding: 20px;
+}
+
+#countdown {
+    display: none;
+    font-size: 3em;
+}
+
+
+
+/* Blocked off times */
+.blocked-out{
+    background-color: #555 !important;
+}
+
+.blocked-out-personal{
+    background-color: #555 !important;
+}
+
+/* Styling for other blocks when there is an overlap */
+.grey-out { opacity: 0.5; background-color: grey; }
+
+
+
+/* Level complete styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    font-size: larger;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.con-but {
+    font-size: large;
+}
+
+
+
+
+
+</style>
+
+<!-- Level complete overlay -->
+<div id="levelCompleteModal" class="modal">
+    <div class="modal-content">
+        <p id="levelCompleteMessage"></p>
+        <button id="perkButton1" class="con-but" style="display: none;">Perk 1</button>
+        <button id="perkButton2" class="con-but" style="display: none;">Perk 2</button>
+        <button id="continueButton" class="con-but">Continue</button>
+    </div>
+</div>
+<!-- End level complete overlay -->
+
+
+
+<div id="overlay">
+    <div id="start-screen">
+        <button id="start-button">START</button>
+    </div>
+    <div id="countdown"></div>
+</div>
+<div id="main-content">
+
+<h1>CALENDAR CLASH</h1>
+<h2>Level: <span id="level-num">1</span></h2>
+
+Week <span id="week-num">0</span>/<span id="max-week-num">4</span>
+
+Level progress: <div class="progress-bar-container">
+    <div class="visible-progress-bar" id="progress-bar"></div>
+</div>
+
+
+Meeting load: <div class="progress-bar-container">
+    <div class="visible-progress-bar" id="minutes-in-meetings"></div>
+</div>
+
+Resilience: <div class="progress-bar-container">
+    <div class="visible-progress-bar" id="resilience"></div>
+</div>
+
+
+
+
+<div id="game-board">
+    <div class="column-wrapper">
+        <div class="day-label">Mon</div>
+    <div class="column working-hours" id="column1">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <!-- <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div> -->
+        <div class="time-slots">
+<div class="time-slot pre-hours morning 7">7:00</div><div class="time-slot pre-hours morning 8">8:00</div>
+            <div class="time-slot morning 9">9:00</div><div class="time-slot morning 10">10:00</div>
+            <div class="time-slot morning 11">11:00</div><div class="time-slot morning 12">12:00</div>
+            <div class="time-slot lunch-hours afternoon 13">13:00</div><div class="time-slot afternoon 14">14:00</div>
+            <div class="time-slot afternoon 15">15:00</div><div class="time-slot afternoon 16">16:00</div>
+            <div class="time-slot post-hours afternoon 17">17:00</div><div class="time-slot post-hours afternoon 18">18:00</div>
+            <div class="time-slot post-hours afternoon 19">19:00</div><div class="time-slot post-hours afternoon 20">20:00</div>
+        </div>
+    </div>
+    </div>
+    <div class="column-wrapper">
+        <div class="day-label">Tue</div>
+    <div class="column working-hours" id="column2">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <!-- <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div> -->
+        <div class="time-slots">
+<div class="time-slot pre-hours morning 7">7:00</div><div class="time-slot pre-hours morning 8">8:00</div>
+            <div class="time-slot morning 9">9:00</div><div class="time-slot morning 10">10:00</div>
+            <div class="time-slot morning 11">11:00</div><div class="time-slot morning 12">12:00</div>
+            <div class="time-slot lunch-hours afternoon 13">13:00</div><div class="time-slot afternoon 14">14:00</div>
+            <div class="time-slot afternoon 15">15:00</div><div class="time-slot afternoon 16">16:00</div>
+            <div class="time-slot post-hours afternoon 17">17:00</div><div class="time-slot post-hours afternoon 18">18:00</div>
+            <div class="time-slot post-hours afternoon 19">19:00</div><div class="time-slot post-hours afternoon 20">20:00</div>
+        </div>
+    </div>
+    </div>
+
+    <div class="column-wrapper">
+        <div class="day-label">Wed</div>
+    <div class="column working-hours" id="column3">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <!-- <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div> -->
+        <div class="time-slots">
+<div class="time-slot pre-hours morning 7">7:00</div><div class="time-slot pre-hours morning 8">8:00</div>
+            <div class="time-slot morning 9">9:00</div><div class="time-slot morning 10">10:00</div>
+            <div class="time-slot morning 11">11:00</div><div class="time-slot morning 12">12:00</div>
+            <div class="time-slot lunch-hours afternoon 13">13:00</div><div class="time-slot afternoon 14">14:00</div>
+            <div class="time-slot afternoon 15">15:00</div><div class="time-slot afternoon 16">16:00</div>
+            <div class="time-slot post-hours afternoon 17">17:00</div><div class="time-slot post-hours afternoon 18">18:00</div>
+            <div class="time-slot post-hours afternoon 19">19:00</div><div class="time-slot post-hours afternoon 20">20:00</div>
+        </div>
+    </div>
+    </div>
+
+
+<div class="column-wrapper">
+        <div class="day-label">Thu</div>
+    <div class="column working-hours" id="column4">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <!-- <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div> -->
+        <div class="time-slots">
+<div class="time-slot pre-hours morning 7">7:00</div><div class="time-slot pre-hours morning 8">8:00</div>
+            <div class="time-slot morning 9">9:00</div><div class="time-slot morning 10">10:00</div>
+            <div class="time-slot morning 11">11:00</div><div class="time-slot morning 12">12:00</div>
+            <div class="time-slot lunch-hours afternoon 13">13:00</div><div class="time-slot afternoon 14">14:00</div>
+            <div class="time-slot afternoon 15">15:00</div><div class="time-slot afternoon 16">16:00</div>
+            <div class="time-slot post-hours afternoon 17">17:00</div><div class="time-slot post-hours afternoon 18">18:00</div>
+            <div class="time-slot post-hours afternoon 19">19:00</div><div class="time-slot post-hours afternoon 20">20:00</div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="column-wrapper">
+        <div class="day-label">Fri</div>
+    <div class="column working-hours" id="column5">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <!-- <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div> -->
+        <div class="time-slots">
+<div class="time-slot pre-hours morning 7">7:00</div><div class="time-slot pre-hours morning 8">8:00</div>
+            <div class="time-slot morning 9">9:00</div><div class="time-slot morning 10">10:00</div>
+            <div class="time-slot morning 11">11:00</div><div class="time-slot morning 12">12:00</div>
+            <div class="time-slot lunch-hours afternoon 13">13:00</div><div class="time-slot afternoon 14">14:00</div>
+            <div class="time-slot afternoon 15">15:00</div><div class="time-slot afternoon 16">16:00</div>
+            <div class="time-slot post-hours afternoon 17">17:00</div><div class="time-slot post-hours afternoon 18">18:00</div>
+            <div class="time-slot post-hours afternoon 19">19:00</div><div class="time-slot post-hours afternoon 20">20:00</div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+    <div id="incoming-blocks"></div>
+
+</div>
+
+<button id="fast-forward">Fast Forward</button>
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+
+
+
+
+<script>
+
+        // Variables plus positive and negative functions
+
+    var pasageOfTimeInterval;
+    // Track the number of minutes in meetings
+    var minutesInMeetings = 0;
+
+    // Track resilience
+    var resilience = 100;
+    // Keep track of OG val
+    var ogResilience = parseInt(String(resilience))
+
+    // Temporary hard-coded requirement
+    var LevelRequirement = 1000;
+    var weekNum = 0;
+
+    // Keep track of level number
+    var levelNo = 1
+
+    var levelComplete = false
+    var gameOver = false
+
+
+
+
+    var blockSize = $("#column1").height()/52; // each slot is 10px high
+    var minBlockHeight = blockSize*1.5; // minimum block height in px
+    var maxBlockHeight = minBlockHeight * 6; // maximum block height in px
+    // Calculate the slotHeight based on the actual height of the #game-board element
+    var slotHeight = $('#game-board').height() / 52; // height of each starting point in px
+
+    var outsideTimeMinutes = 0; // Counter for blocks placed lower than 4 PM
+
+
+    // Track the block number
+    var blockNumber = 0;    
+
+
+// Create some variables that we can use to affect the gameplay later on with perks
+var gameVariables = {
+    "minutesInMeetingsMultiplier": 1,
+    "normalInterval": 200,  // The normal interval duration (in milliseconds)
+    "fastInterval": 20,
+    "meetingLeeway": 1,
+    "maxResilience": 100,
+    "maxWeekNum": 4,
+    "fiveWeekLikelihood": 0,
+    "baseLevelAddition": 100,
+    "levelRequirementMultiplier": 1,
+    "outOfHoursPenalty": 1,
+    "countdownNumber": 3,
+    "maxBlocks": 5,
+    "heavyWeight": 2,
+    "inMeetingWeight": 1,
+    "automatedFollowUpLikelihoodMultiplier": 1,
+    "heavyMeetingLikelihoodMultiplier": 1,
+    "resilienceRecoveryMultiplier": 1,
+    "resilienceBoostMultiplier": 1,
+    "tripleMeetings": 0,
+    "meetingsWithFollowUp": 0,
+    "weeklyRecurring": 0,
+    "heavyMeetings": 0,
+    "morning": 0,
+    "afternoon": 0,
+    "randomised": 0,
+    "workout": 0,
+    "cooking": 0,
+    "blockedPersonalTime": 0,
+}
+
+// Lists of functions which create perks or downsides
+var positiveFunctions = [
+    {
+        "name": "increase how much each meeting minute contributes to your target",
+        "function": function() {multiplyGameVariables("minutesInMeetingsMultiplier", 1.02);}
+    }, 
+    {
+        "name": "slow down speed that time passes",
+        "function": function() {multiplyGameVariables("normalInterval", 1.2);}
+    }, 
+    {
+        "name": "increase total resilience (and reset resilience level to max)",
+        "function": function() {changeMaxResilience(1.02);}
+    },
+    {
+        "name": "increase number of weeks (max 6)",
+        "function": function() {addSubtractGameVariables("maxWeekNum", 1);}
+    },
+    {
+        "name": "reduce how much every meeting impacts your 'meeting load'",
+        "function": function() {multiplyGameVariables("inMeetingWeight", 0.95);}
+    },
+    {
+        "name": "speed up how quickly your resilience recovers",
+        "function": function() {multiplyGameVariables("resilienceRecoveryMultiplier", 1.05);}
+    },
+    {
+        "name": "increase likelihood of meetings with automated follow up",
+        "function": function() {multiplyGameVariables("automatedFollowUpLikelihoodMultiplier", 0.95);}
+    },
+    {
+        "name": "increase how much personal time meetings help with resilience revovery",
+        "function": function() {addSubtractGameVariables("resilienceBoostMultiplier", 0.05);}
+    }
+
+]; 
+var negativeFunctions = [
+    {
+        "name": "increase speed that time passes",
+        "function": function() {multiplyGameVariables("normalInterval", 0.9);}
+    },
+    {
+        "name": "make it so that resilience is more impacted by a lower meeting load",
+        "function": function() {multiplyGameVariables("meetingLeeway", 0.97);}
+    },
+    {
+        "name": "reduce max resilience",
+        "function": function() {changeMaxResilience(0.97);}
+    },
+    {
+        "name": "reduce week number",
+        "function": function() {reduceMaxWeeks();}
+    },
+    {
+        "name": "increase how quickly the target increases each level",
+        "function": function() {multiplyGameVariables("meetingLeeway", 1.2);}
+    },
+    {
+        "name": "increase the penalty from booking meetings in out-of-work hours",
+        "function": function() {multiplyGameVariables("outOfHoursPenalty", 1.2);}
+    },
+    {
+        "name": "reduce the time you have to fix it if two meetings overlap",
+        "function": function() {addSubtractGameVariables("countdownNumber", -1);}
+    },
+    {
+        "name": "reduce the number of meetings you can choose between in your inbox",
+        "function": function() {addSubtractGameVariables("maxBlocks", -1);}
+    },
+    {
+        "name": "increase the weight of heavy meetings",
+        "function": function() {multiplyGameVariables("heavyWeight", 1.2);}
+    },
+    {
+        "name": "slow down resilience recovery",
+        "function": function() {multiplyGameVariables("resilienceRecoveryMultiplier", 0.95);}
+    },
+    {
+        "name": "increase likelihood of heavy meetings",
+        "function": function() {multiplyGameVariables("heavyMeetingLikelihoodMultiplier", 0.95);}
+    },
+
+
+];
+
+
+
+
+var challengeDict = {
+    2: {
+        "type": "new meeting",
+        "text":"meetings with follow up (when you place the meeting it will create another one an hour or so later)",
+        "function": function() {adjustMeetingTypeChance("meetingsWithFollowUp", 300);}
+        
+    },
+    4: {
+        "type": "new meeting",
+         "text":"meetings in blocks of three (when you place the meeting it will create two more on consecutive days in the same week - they all stay at the same time)",
+        "function": function() {adjustMeetingTypeChance("meetingsWithFollowUp", 1000, "tripleMeetings", 300);}
+    },
+    6: {
+        "type": "new meeting",
+        "text": "weekly recurring meetings - place it once, it'll show up every week at the same time, you can only move the weekly recurring meetings before you attend the first one.",
+        "function": function() {adjustMeetingTypeChance("tripleMeetings", 1000, "weeklyRecurring", 300);}
+    },
+    8: {
+        "type": "new meeting",
+        "text": "heavy meetings - they will have a bigger impact on your meeting load, reducing your resilience",
+        "function": function() {adjustMeetingTypeChance("weeklyRecurring", 900, "heavyMeetings", 500);}
+    },
+    10: {
+        "type": "new meeting",
+        "text": "morning meetings - you can only put them in the morning",
+        "function": function() {adjustMeetingTypeChance("heavyMeetings", 900, "morning", 300);}
+    },
+    12: {
+        "type": "new meeting",
+        "text":"afternoon meetings - you can only put them in the afternoon",
+        "function": function() {adjustMeetingTypeChance("morning", 900, "afternoon", 300);}
+    },
+    14: {
+        "type": "new meeting",
+        "text":"meetings with busy people - you'll only be able to book them for certain slots",
+        "function": function() {adjustMeetingTypeChance("afternoon", 900, "randomised", 300);}
+    },
+    16: {
+        "type": "new meeting",
+        "text":"workout blocks - they don't help you reach your meeting target but they recover some resilience. You have to put them in the morning",
+        "function": function() {adjustMeetingTypeChance("randomised", 900, "workout", 300);}
+    },
+    18: {
+        "type": "new meeting",
+        "text":"cooking blocks - they don't help you reach your meeting target but they recover some resilience",
+        "function": function() {adjustMeetingTypeChance("workout", 900, "cooking", 300);}
+    },
+    20: {
+        "type": "new meeting",
+        "text":"other responsibilities - you have a random chance for some meeting times to be blocked out - they won't contribute to your meeting minutes",
+        "function": function() {adjustMeetingTypeChance("cooking", 900, "blockedPersonalTime", 1500);}
+    },
+    22: {
+        "type": "new meeting",
+        "text":"increasing chance of heavy meetings",
+        "function": function() {adjustMeetingTypeChance("blockedPersonalTime", 2500, "heavyMeetings", 800);}
+    },
+    22: {
+        "type": "new meeting",
+        "text":"increasing chance of difficult-to-place meetings",
+        "function": function() {
+            adjustMeetingTypeChance("afternoon", 800, "randomised", 800);
+            adjustMeetingTypeChance("morning", 800);
+        }
+    },
+}
+
+
+
+// END VARIABLES PLUS POSITIVE AND NEGATIVE FUNCTIONS
+
+
+$(function() {
+
+
+
+
+    // Prevent page from accidentally reloading if user on mobile and drags down
+    window.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    }, { passive: false });
+
+
+
+
+
+
+function reshuffleBlocks() {
+    var $blocks = $('#incoming-blocks').children('.block');
+    var top = 0;
+    $blocks.each(function() {
+        $(this).css({ top: top, left: 0 });
+        top += $(this).outerHeight() + 5; // 5-pixel gap between blocks
+    });
+}
+
+
+
+
+
+
+
+    
+ function createBlock(givenPosition = null, givenHeight = null, setNumber = null, columnId = null, repeatType = null, ogBlock = null) {
+
+     if ($('#incoming-blocks > .block').length >= gameVariables["maxBlocks"] && givenPosition == null) {
+        return; // Return early if there are already 5 blocks
+    }
+
+    
+    
+    var height
+    
+    if (givenHeight != null){
+        height = givenHeight
+    } else {
+        height = Math.round((Math.random() * (maxBlockHeight - minBlockHeight) + minBlockHeight) / blockSize) * blockSize;
+    }
+
+
+    var $block = $('<div>').addClass('block').height(height);
+
+    // Set initial block repetition value to false
+    $block.data('repeated', false);
+
+    if (givenPosition !== null) {
+        $block.css('top', givenPosition);
+        $block.autoCreated = true
+        $block.top = givenPosition
+    }
+
+
+    // Generate random pastel color
+    var hue = Math.floor(Math.random() * 360);
+    var pastelColor = 'hsl(' + hue + ', 80%, 80%)';
+    $block.css('background-color', pastelColor);
+
+
+    // Increment the block number
+    blockNumber++;
+
+    // Give a set number for the block
+    if (setNumber == null) {
+        $block.data('setNumber', parseInt(String(blockNumber)));
+    } else {
+        $block.data('setNumber', setNumber);
+    }
+
+    var restrictionType
+    var followUp = false
+    var timeRestriction = false
+    var heavyMeeting = false
+
+    // If there's data passed through from the original block - add to new ones
+    var data
+    if (ogBlock){
+        let prevCol = ogBlock.css('background-color');
+        $block.css('background-color', prevCol);
+
+        data = ogBlock.data();
+
+        $.each(data, function(key, value) {
+            if (key == "repeated" || key == "weight"){
+                $block.data(key, value);
+            }
+        });
+    }
+
+    // If there is a repeatType set then use that
+    if (repeatType == "triple"){
+        
+        $block.addClass("triple-meeting")
+        $block.data('repeated', "triple");
+    } else if (repeatType == "same-day-follow-up"){
+        $block.addClass("same-day-follow-up");
+        $block.data('repeated', "same-day-follow-up");
+    } else {
+
+        if (gameVariables["meetingsWithFollowUp"] >0){
+        var randNum = Math.round(Math.random() * gameVariables["meetingsWithFollowUp"])
+
+        if (randNum < 200){
+            $block.addClass("same-day-follow-up");
+            $block.data('repeated', "same-day-follow-up");
+            followUp = true
+        }
+        }
+
+        if (gameVariables["tripleMeetings"] >0 & !followUp){
+        var randNum = Math.round(Math.random() * gameVariables["tripleMeetings"])
+
+        if (randNum < 200){
+            $block.addClass("triple-meeting");
+            $block.data('repeated', "triple");
+            followUp = true
+        }
+        }
+
+
+        if (gameVariables["weeklyRecurring"] >0 & !followUp){
+        var randNum = Math.round(Math.random() * gameVariables["tripleMeetings"])
+
+        if (randNum < 200){
+            $block.addClass("weekly-recurring")
+            $block.append('<i class="fas fa-redo"></i>')
+            $block.data('repeated', "weekly-recurring");
+            followUp = true
+        }
+        }
+
+
+        if (gameVariables["heavyMeetings"] > 0){
+        var randNum = Math.round(Math.random() * gameVariables["heavyMeetings"])
+
+        if (randNum < 200){
+            $block.addClass("heavy")
+            $block.append('<i class="fas fa-hippo"></i>')
+            $block.data('weight', gameVariables['heavyWeight']);
+            heavyMeeting = true
+        }
+        }
+
+        if (gameVariables["randomised"] > 0){
+        var randNum = Math.round(Math.random() * gameVariables["randomised"])
+
+        if (randNum < 200){
+            $block.append('<i class="fas fa-handshake"></i>');
+            restrictionType = "randomised"
+            timeRestriction = true
+            var timeSlots = $(".time-slot")
+            var unavailableArray = []
+            for (let ts of timeSlots){
+                if (Math.round((Math.random() *3)) <2){
+                    unavailableArray.push($(ts))
+                }
+            }
+        }
+        }
+        
+        if (gameVariables["morning"] > 0 && restrictionType != "randomised"){
+        var randNum = Math.round(Math.random() * gameVariables["morning"])
+
+        if (randNum < 200){
+            $block.append('<i class="fas fa-coffee"></i>');
+            restrictionType = "morning"
+            timeRestriction = true
+        }
+        }
+
+
+        if (gameVariables["afternoon"] > 0 && restrictionType !="morning" && restrictionType != "randomised"){
+        var randNum = Math.round(Math.random() * gameVariables["afternoon"])
+
+        if (randNum < 200){
+            $block.append('<i class="fas fa-business-time"></i>');
+            restrictionType = "afternoon"
+            timeRestriction = true
+        }
+        }
+
+        if (gameVariables["workout"] > 0 && !heavyMeeting && restrictionType != "afternoon" && restrictionType != "randomised" && !followUp){
+        var randNum = Math.round(Math.random() * gameVariables["workout"])
+
+        if (randNum < 200){
+            $block.append('<i class="fas fa-dumbbell"></i>');
+            $block.data('personalTime', "workout");
+            restrictionType = "morning"
+            timeRestriction = true
+        }
+        }
+        if (gameVariables["cooking"] > 0 && !heavyMeeting && restrictionType != "randomised" && restrictionType !="morning" && !followUp){
+        var randNum = Math.round(Math.random() * gameVariables["cooking"])
+
+        if (randNum < 200){
+            $block.append('<i class="fas fa-utensils"></i>');
+            $block.data('personalTime', "cooking");
+            restrictionType = "afternoon"
+            timeRestriction = true
+        }
+        }
+    }
+    
+    
+
+    // calculate the block duration
+    var blockDuration = height / blockSize * 15;  // each block size represents 15 minutes
+    // $block.text(blockDuration + " min");  // add the duration text inside the block
+
+    if (givenPosition == null){
+        reshuffleBlocks(); // reshuffle the blocks after a new block is added
+
+        $block.appendTo('#incoming-blocks');
+
+        reshuffleBlocks(); // reshuffle the blocks after a new block is added
+
+        // Calculate the position of the new block
+        // var top = 0;
+        var left = 0;
+
+        reshuffleBlocks();
+    } else {
+        // Append the block to a specific column
+        $('#' + columnId).append($block);
+    }
+    
+
+    
+
+    $block.css({ top: top, left: left });
+
+    // make the block draggable and define what happens when it's dropped
+      // make the block draggable and define what happens when it's dropped
+   $block.draggable({
+    revert: "invalid",
+    helper: "original",
+    scroll: false,
+    containment: "window",
+    start: function(event, ui) {
+            // Grey out times based on restriction
+            if (restrictionType == "morning"){
+                $(".afternoon").addClass("blocked-out")
+            } else if (restrictionType == "afternoon"){
+                $(".morning").addClass("blocked-out")
+            } else if (restrictionType == "randomised"){
+                for (let childInst of unavailableArray){
+                    childInst.addClass("blocked-out")
+                }
+            }
+
+
+            var $block = $(this)
+            $block.css('z-index', 1000);  // Raises the z-index of the block during drag
+            var originalPosition = $block.position();
+            var originalParent = $block.parent().attr('id')
+            var originalPositionTop = originalPosition.top;
+            var originalPositionBottom = originalPositionTop+$block.outerHeight();
+            var pm4Position = $('.post-hours').first().position().top;
+            var am8Position = $('.pre-hours').last().position().top;
+
+            console.log(`og parent: ${originalParent}`)
+            $block.data('originalParent', $block.parent().attr('id'));
+            $block.data('wasOutsideHours', originalPositionTop < am8Position || originalPositionBottom > pm4Position);
+            $block.data('originalPosition', originalPosition);
+            $block.data('placement', "inbox");
+
+            // Check if the block intersects with the passage-of-time
+            // Check if the block is in a column
+            if (originalParent.includes("column")){
+                // Find the lowest point of the inexorable-passage-of-time block in this column
+                var $parent = $block.parent()
+
+                var $timePassage = $parent.find('.inexorable-passage-of-time');
+
+                // Check if there is a collision with the 'inexorable-passage-of-time' div
+                var timePassageBottom = $timePassage.position().top + $timePassage.outerHeight();
+
+                // Get the top of the block before it's moved
+                var columnOffset = $parent.offset();
+                var top = parseInt($block.css('top'));
+
+                if (top<timePassageBottom){
+                    // Check if the top of the block is higher than the bottom of the passage of time - if so, fix in place
+                    console.log(`BLOCK IS IN PASSED TIME: ${$parent.attr('id')}: ${timePassageBottom} > ${top}`)
+                    $block.draggable('disable');
+                    $block.data('notMoveable', "true");
+                }
+                
+
+            }
+        },
+
+        drag: function(event, ui) {
+        var $block = $(this);
+
+        if ($block.data('notMoveable') == "true") {
+            event.preventDefault();
+        }
+    },
+    
+    stop: function(event, ui) {
+        $(this).css('z-index', ''); // Resets the z-index when the dragging stop
+
+        // Grey out times based on restriction
+        setTimeout(() =>{
+            $(".blocked-out").removeClass("blocked-out")
+
+        }, 200)
+        
+
+        var repeated = $block.data('repeated');
+
+        if (repeated=="triple" && $(this).parent().hasClass('column') && $block.data('originalParent') == 'incoming-blocks') {
+                var columnId = $(this).parent().attr('id');
+                var nextColumnId1 = getNextColumnId(columnId);
+                var nextColumnId2 = getNextColumnId(nextColumnId1);
+                var position = $(this).css('top');
+                var height = $(this).outerHeight()
+                var setNumber = $(this).data('setNumber')
+                console.log("CREATING ADDITIONAL BLOCKS")
+                setTimeout(function() { createBlockInColumn(nextColumnId1, position, height, setNumber, repeated, $block); }, 10);
+                setTimeout(function() { createBlockInColumn(nextColumnId2, position, height, setNumber, repeated, $block); }, 20);
+             } else if (repeated=="triple" && $(this).parent().hasClass('column')) {
+                // Move all blocks with the same setNumber to the same position
+                var newPosition = $(this).position();
+                var currentSetNumber = $(this).data('setNumber');
+                $('.column > .block').each(function(index, element) {
+                    
+                    var $element = $(element)
+                    if ($element.data('setNumber') === $block.data('setNumber') && element !== $block[0]) {
+
+                        // Get parent of element and position of passed time
+                        var $elemPar = $element.parent()
+                        var $timePassage = $elemPar.find('.inexorable-passage-of-time');
+                        var timePassed = $timePassage.position().top + $timePassage.outerHeight();
+
+                        // Check if time has passed for element
+                        if ($element.position().top > timePassed){ 
+
+                            $(element).css({ top: newPosition.top});
+                            
+                            // Get column from element
+                            $column = $(element).parent()
+
+                            // Check if any of the blocks have been moved into overlapping position
+                            handleOverlaps($(element), $column, slotHeight)
+                    }
+
+                    }
+                });
+
+
+            } else if (repeated == "same-day-follow-up" && $(this).parent().hasClass('column') && $block.data('originalParent') == 'incoming-blocks'){
+                // If same day - create another meeting 2 hours later
+                var columnId = $(this).parent().attr('id');
+                var position = $(this).css('top');
+
+                var newTop = parseInt(position)+(blockSize*4); // Each block is 15 minutes
+
+                console.log(`OGposition: ${position} newTop: ${newTop}`)
+
+                var height = $(this).outerHeight()
+
+                var setNumber = $(this).data('setNumber')
+
+                console.log("CREATING ADDITIONAL BLOCKS")
+                setTimeout(function() { createBlockInColumn(columnId, newTop+height, height, setNumber, repeated, $block); }, 10);
+
+            }
+    }
+});
+
+
+
+
+
+        
+
+        /// ...
+
+  // make the columns accept the blocks and define what happens when a block is dropped
+$('.column').droppable({
+    accept: '.block',
+        drop: function(event, ui) {
+        var $column = $(this);
+        var $block = ui.helper;
+        var repeated = $block.data('repeated');
+        
+        // Calculate the top position relative to the column
+        var columnOffset = $column.offset();
+        var top = 0
+        
+        if ($block.autoCreated){
+            top = $block.top
+        } else {
+            top = columnOffset ? ui.offset.top - columnOffset.top : 0;
+        }
+
+        console.log(`BLOCK TOP: ${top} auto created: ${$block.autoCreated}`)
+        
+        var nearestSlot = Math.round(top / slotHeight) * slotHeight;
+
+         // Check if there is a collision with the 'inexorable-passage-of-time' div
+        var $timePassage = $column.find('.inexorable-passage-of-time');
+        var timePassageBottom = $timePassage.position().top + $timePassage.outerHeight();
+        var blockBottom = nearestSlot + $block.outerHeight();
+
+        var blockNotMovable = $block.data('notMoveable') == "true"
+
+        if(top < timePassageBottom || blockNotMovable){
+            // The block overlaps with the 'inexorable-passage-of-time' div, revert the drag
+            $block.css($block.data('originalPosition'));  // restore to original position
+            $block.appendTo('#'+$block.data('originalParent'));  // restore to original parent
+            return;
+        }
+
+        // Check if the block is being moved to a blocked-out slot
+        var blockedOutSlots = $column.find('.blocked-out, .blocked-out-personal')
+        var reject = false
+        for (let s of blockedOutSlots){
+            
+            var slotTop = $(s).offset().top - columnOffset.top;
+            var slotBottom = slotTop+$(s).outerHeight();
+
+            console.log(`columnOffset ${columnOffset.top}`)
+            console.log(`slotTop ${slotTop}`)
+            console.log(`slotBottom ${slotBottom}`)
+            console.log(`top ${top}`)
+            console.log(`blockBottom ${blockBottom}`)
+
+            if (top < slotTop && blockBottom > slotTop){
+                reject = true
+            } else if (top > slotTop && top < slotBottom){
+                reject = true
+            } else if (blockBottom > slotTop && top < slotBottom){
+                reject = true
+            }
+
+            if (reject){
+                $block.css($block.data('originalPosition'));  // restore to original position
+                $block.appendTo('#'+$block.data('originalParent'));  // restore to original parent
+                return;
+            }
+        }
+
+        // Check if the block was moved from below 4 PM to above it
+        var wasOutsideHours = $block.data('wasOutsideHours');
+        var originalParent = $block.data('originalParent');
+
+        if (repeated=='triple' && originalParent!=$column.attr("id") && ($column.attr("id") == "column4" || $column.attr("id") == "column5")){
+            // The block overlaps with the 'inexorable-passage-of-time' div, revert the drag
+            $block.css($block.data('originalPosition'));  // restore to original position
+            $block.appendTo('#'+$block.data('originalParent'));  // restore to original parent
+            return;
+        }
+
+        // Get the top position of the 4 PM and 8 AM time slots
+        var pm4Position = $('.post-hours').first().position().top;
+        var am8Position = $('.pre-hours').last().position().top;
+
+
+        // Calculate the position of the bottom and top of the block relative to the column
+        var blockBottomPosition = nearestSlot + $block.outerHeight();
+        var blockTopPosition = nearestSlot;
+
+        // Condense logic checks
+        var previouslyOutside = (wasOutsideHours && originalParent!= 'incoming-blocks')
+        var nowOutsideHours = (blockBottomPosition > pm4Position || blockTopPosition < am8Position)
+
+        // Calculate the proportion of the block outside the 8 AM - 4 PM window
+        var blockLength = parseInt($block.outerHeight());
+        var blockLengthInMinutes = blockLength / blockSize * 10; // convert to minutes
+        var blockStartMinutes = Math.max(0, am8Position - blockTopPosition) / blockSize * 10;
+        var blockEndMinutes = Math.max(0, blockBottomPosition - pm4Position) / blockSize * 10;
+        var outsideMinutes = blockStartMinutes + blockEndMinutes;
+        if (outsideMinutes > blockLengthInMinutes){
+            outsideMinutes = blockLengthInMinutes;
+        };
+
+        console.log(`$block.outerHeight() ${$block.outerHeight()}`)
+
+        
+        if (!previouslyOutside && nowOutsideHours){
+            $block.previouslyOutside = true;
+            $block.outsideMinutes = outsideMinutes;
+            outsideTimeMinutes = outsideTimeMinutes + outsideMinutes;
+        } else if (previouslyOutside && nowOutsideHours){
+            $block.previouslyOutside = true;
+            outsideTimeMinutes = outsideTimeMinutes - $block.outsideMinutes;
+            $block.outsideMinutes = outsideMinutes;
+            outsideTimeMinutes = outsideTimeMinutes + outsideMinutes;
+        } else if (previouslyOutside && !nowOutsideHours){
+            $block.previouslyOutside = false
+            outsideTimeMinutes = outsideTimeMinutes - $block.outsideMinutes;
+        }
+
+        console.log(`outsideTimeMinutes ${outsideTimeMinutes}`)
+        
+        // Update the counter display
+        $('#block-counter').text(parseInt(outsideTimeMinutes));
+
+    $block.css({ top: nearestSlot, left: '0px' });
+    $block.appendTo($column);
+
+    // Handle overlaps
+    if (isOverlap($block, $column, true)) {
+        handleOverlaps($block, $column, slotHeight)
+     }
+
+
+}
+
+
+});
+
+
+// ...
+return $block
+
+    }
+
+
+
+function getNextColumnId(columnId) {
+    // Get the number from the column ID and increment it
+    var columnNumber = parseInt(columnId.replace('column', '')) + 1;
+
+    // If the next column number is greater than 5, reset it to 1
+    if (columnNumber > 5) {
+        columnNumber = 1;
+    }
+
+    return 'column' + columnNumber;
+}
+
+function createBlockInColumn(columnId, position = null, height = null, setNumber = null, repeatType = null, ogBlock = null) {
+
+    console.log(`repeatType: ${repeatType}`)
+    // Create a block and add it to the specified column
+    var $block = createBlock(position, height, setNumber, columnId, repeatType, ogBlock);
+
+    var column = $("#"+columnId)
+
+    // Handle overlaps
+    if (isOverlap($block, column, true)) {
+        handleOverlaps($block, column, slotHeight)
+     }
+}
+
+
+function isOverlap($block, $column, adjust) {
+    var blockTop = $block.position().top;
+    var blockBottom = blockTop + $block.outerHeight();
+    var blockLeft = $block.position().left;
+    var blockRight = blockLeft + $block.outerWidth();
+
+    var overlap = false;
+
+    $column.children('.block').each(function() {
+        if (this === $block[0]) {
+            return true; // skip the block itself
+        }
+
+        var $this = $(this);
+        var thisTop = $this.position().top;
+        var thisBottom = thisTop + $this.outerHeight();
+        var thisLeft = $this.position().left;
+        var thisRight = thisLeft + $this.outerWidth();
+
+        if (
+            blockTop < thisBottom && blockBottom > thisTop &&
+            blockLeft < thisRight && blockRight > thisLeft
+        ) {
+            overlap = true;
+
+            $(".block").not($block).not($this).addClass("grey-out"); // Make all other blocks semi-transparent
+            // stop the each loop
+            return false;
+        }
+    });
+
+    if (overlap && adjust) {
+        // Try moving the block up
+        var newTop = blockTop - slotHeight;
+        if (newTop >= 0) {
+            $block.css('top', newTop);
+            if (!isOverlap($block, $column, false)) {
+                overlap = false; // No overlap after moving up
+            } else {
+                $block.css('top', blockTop); // Reset top if still overlapping
+            }
+        }
+
+        // If still overlapping, try moving the block down
+        if (overlap) {
+            newTop = blockTop + slotHeight;
+            if (newTop + $block.outerHeight() <= $column.height()) {
+                $block.css('top', newTop);
+                if (!isOverlap($block, $column, false)) {
+                    overlap = false; // No overlap after moving down
+                } else {
+                    $block.css('top', blockTop); // Reset top if still overlapping
+                }
+            }
+        }
+    }
+
+    if (!overlap){
+        $(".grey-out").removeClass("grey-out"); // Remove transparency
+    }
+
+    return overlap;
+}
+
+
+function handleOverlaps(block, column, slotHeight){
+       // handle overlaps
+    block.css('top', block.position().top - slotHeight);
+
+
+    if (isOverlap(block, column, false)) {
+        // start countdown and display it
+        var countdown = 3; // in seconds
+        var countdownDisplay = $('<div/>', { id: 'countdown', text: countdown }).appendTo('body');
+
+        var countdownInterval = setInterval(function() {
+            countdown--;
+            countdownDisplay.text(countdown);
+            if (countdown === 0) {
+                for (let cd of countdownIntervalList){
+                    clearInterval(cd);
+                }
+                countdownDisplay.remove();
+                // end game here
+                alert('Game Over - you put one meeting on top of another');
+                resetGame();
+
+
+
+
+            }
+        }, 1000);
+        countdownIntervalList.push(countdownInterval)
+
+        // Check for overlaps periodically
+        var overlapCheckInterval = setInterval(function() {
+           if (!isOverlap(block, column, false)) {
+                    // No overlap detected, stop countdown
+                    for (let cd of countdownIntervalList){
+                    clearInterval(cd);
+                    }
+                    clearInterval(overlapCheckInterval);
+                    countdownDisplay.remove(); // remove the countdown display
+                    $(".grey-out").removeClass("grey-out")
+                }
+        }, 500); // check twice per second
+    } else {
+        // Re-initialize draggable for the moved block
+        block.draggable({
+            revert: "invalid",
+            helper: "original",
+            scroll: false,
+            containment: "window",
+            start: function(event, ui) {
+            var $block = $(this)
+            $block.css('z-index', 1000);  // Raises the z-index of the block during drag
+            var originalPosition = $block.position();
+            var originalParent = $block.parent().attr('id')
+            var originalPositionTop = originalPosition.top;
+            var originalPositionBottom = originalPositionTop+$block.outerHeight();
+            var pm4Position = $('.post-hours').first().position().top;
+            var am8Position = $('.pre-hours').last().position().top;
+
+            console.log(`og parent: ${originalParent}`)
+            $block.data('originalParent', $block.parent().attr('id'));
+            $block.data('wasOutsideHours', originalPositionTop < am8Position || originalPositionBottom > pm4Position);
+            $block.data('originalPosition', originalPosition);
+            $block.data('placement', "inbox");
+
+            // Check if the block intersects with the passage-of-time
+            // Check if the block is in a column
+            if (originalParent.includes("column")){
+                // Find the lowest point of the inexorable-passage-of-time block in this column
+                var $parent = $block.parent()
+
+                var $timePassage = $parent.find('.inexorable-passage-of-time');
+
+                // Check if there is a collision with the 'inexorable-passage-of-time' div
+                var timePassageBottom = $timePassage.position().top + $timePassage.outerHeight();
+
+                // Get the top of the block before it's moved
+                var columnOffset = $parent.offset();
+                var top = columnOffset ? $block.top - columnOffset.top : 0;
+
+                if (top<timePassageBottom){
+
+                    // Check if the top of the block is higher than the bottom of the passage of time - if so, fix in place
+                    $block.draggable('disable');
+                    $block.data('notMoveable', "true");
+                }
+
+            }
+        },
+        drag: function(event, ui) {
+        var $block = $(this);
+
+
+        if ($block.data('notMoveable') == "true") {
+            event.preventDefault();
+        }
+    },
+
+            stop: function(event, ui) {
+                $(this).css('z-index', ''); // Resets the z-index when the dragging stops
+            }
+        });
+}
+}
+
+
+
+
+
+    // start the game
+    setInterval(createBlock, 1000); // create a new block every 5 seconds
+});
+
+
+
+function resetGame(){
+    minutesInMeetings = 0
+
+    resilience = gameVariables["maxResilience"];
+
+    var progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = 0 + '%';
+
+    var resilienceBar = document.getElementById('resilience');
+
+    // Update the width of the progress bar
+    resilienceBar.style.width = resilience/gameVariables["maxResilience"] + '%';
+
+    LevelRequirement = 1000;
+    weekNum = 0;
+
+    levelNo = 0
+
+    levelComplete = false
+
+    var minutesInMeetingsBar = document.getElementById('minutes-in-meetings');
+    minutesInMeetingsBar.style.width = 0 + '%';
+
+    resetWeek(true);
+
+    setTimeout(() => {gameOver = false}, 1000)
+}
+
+// Function to increase max weeks
+function increaseMaxWeeks(){
+    if (gameVariables["maxWeekNum"] < 6){
+        gameVariables["maxWeekNum"]++
+    }
+}
+
+function reduceMaxWeeks(){
+    if (gameVariables["maxWeekNum"] > 2){
+        gameVariables["maxWeekNum"]--
+    }
+}
+
+// function to adjust game variables
+function multiplyGameVariables(targetVariable, adjustment){
+    let currentVar = gameVariables[targetVariable]
+    if (currentVar > 0){
+        gameVariables[targetVariable] = currentVar*adjustment
+    }
+    
+}
+
+function addSubtractGameVariables(targetVariable, adjustment){
+    let currentVar = gameVariables[targetVariable]
+    if (currentVar > 0 && currentVar+adjustment > 0){
+        gameVariables[targetVariable] = currentVar+adjustment
+    }
+}
+
+
+function changeMaxResilience(amount){
+    gameVariables["maxResilience"] = gameVariables["maxResilience"]*amount
+    resilience = gameVariables["maxResilience"]
+}
+
+
+function adjustMeetingTypeChance(meeting1, chance1, meeting2 = null, chance2 = null){
+    gameVariables[meeting1] = chance1
+    if (meeting2 != null){
+        gameVariables[meeting2] = chance2
+    }
+
+    console.log(`NEW GAME VARIABLES: ${JSON.stringify(gameVariables)}`)
+}
+
+
+
+
+// Keep track of recent and medium-term meeting-load
+var longTermLength = 50
+var mediumTermLength = 20
+var shortTermLength = 10
+var longTermMeetingLoad = new Array(longTermLength).fill(0);  // 1 if in meeting time, 0 if not
+var mediumTermMeetingLoad = new Array(mediumTermLength).fill(0);  // 1 if in meeting time, 0 if not
+var shortTermMeetingLoad = new Array(shortTermLength).fill(0);  // 1 if in meeting time, 0 if not
+
+
+function showPassageOfTime(){
+
+    // Make sure we have max one interval running
+    if (passageOfTimeList.length > 1){
+        var tempList = [];
+        console.log(`MORE THAN 1 INTERVAL IN EFFECT; ${passageOfTimeList.length}`)
+        for (let cd in passageOfTimeList){
+            var tempCD = passageOfTimeList.pop(0)
+            if (cd != 0){
+                clearInterval(tempCD)
+            } else {
+                tempList.push(tempCD)
+            }
+        }
+        passageOfTimeList = [...tempList]
+    }
+
+
+
+    if (levelComplete || gameOver){
+        // Don't do anything if level is complete
+        console.log("LEVEL COMPLETE")
+        return;
+    }
+    var noAvailableColumn = true;
+    var colNumber = 1;
+    while (noAvailableColumn){
+
+        if (colNumber > 5){
+            noAvailableColumn = false;
+            clearPassageOfTimeInterval();
+            resetWeek();
+            return;
+        }
+
+        var column = document.querySelector("#column"+colNumber);
+        var height;
+
+        if (column != null){
+            var greyBlock = column.querySelector(".inexorable-passage-of-time");
+            height = greyBlock.style.height;
+            height = parseInt(height);
+        } else {
+            height = 100;
+        }
+        
+        if (height >= 100){
+            colNumber++;
+            continue;
+        } else {
+            noAvailableColumn = false;
+            height = height+1;
+            height = String(height)+"%";
+            greyBlock.style.height = height;
+
+            var inMeetingCheck = 0 // Default assume we weren't in a meeting
+
+
+            // Work out how many minutes each % increment counts for (by default about 7.8 minutes)
+            var minutePerPercent = (
+                (13) // Hours
+                *60) //To minutes
+                /100 // How many minutes in a %
+
+
+            // Now increment the number of in-meeting minutes every time the passage of time increments within a meeting block
+
+            // Calculate bottom line 
+            var greyBlockPosition = greyBlock.getBoundingClientRect()
+            var timePassageBottom = greyBlockPosition.top + greyBlockPosition.height;
+
+            // Find all the blocks in the column
+            var colBlocks = column.querySelectorAll(".block");
+
+            // Loop through blocks and check top and bottom position
+            for (let block of colBlocks){
+                let blockTop = block.getBoundingClientRect().top;
+                if (blockTop > timePassageBottom){
+                    // If the time hasn't reached the block we don't need to worry about it
+                    continue
+                } 
+
+                let blockBottom = blockTop + block.getBoundingClientRect().height;
+
+                if (blockBottom > timePassageBottom){
+                    // Update inMeeting variable
+                    inMeetingCheck = gameVariables["inMeetingWeight"] // Making it representative of the minutes-per-percent check
+
+                    // Check if we're currently pre-8am or post-5pm and adjust meeting-load up appropriately
+                    var preHoursPos = column.querySelector(".pre-hours").getBoundingClientRect()
+                    var preHoursEnd = preHoursPos.top + preHoursPos.height;
+                    
+                    if (timePassageBottom < preHoursEnd){
+                        inMeetingCheck+(1*gameVariables["outOfHoursPenalty"])
+                    } else {
+                        var postHoursPos = column.querySelector(".post-hours").getBoundingClientRect().top;
+                        if (timePassageBottom > postHoursPos){
+                            inMeetingCheck+(1*gameVariables["outOfHoursPenalty"])
+                        } else {
+                            var lunchHours = column.querySelector(".lunch-hours").getBoundingClientRect()
+                            var lunchHoursStart = lunchHours.top
+                            if(timePassageBottom > lunchHoursStart){
+                                var lunchHoursEnd = lunchHours.top + lunchHours.height;
+                                if (timePassageBottom < lunchHoursEnd){
+                                    inMeetingCheck = inMeetingCheck +(0.5*gameVariables["outOfHoursPenalty"])
+                                }
+                            }
+                        }
+                    }
+
+                    // Add extra weight for "heavy" meetings
+                    var weight = $(block).data('weight')
+                    if (weight != null){
+                        inMeetingCheck = inMeetingCheck*parseFloat(weight)
+                    }
+
+                    var personalTime = $(block).data('personalTime')
+                    if (personalTime != null){
+                        inMeetingCheck = 0
+
+                        if (resilience < gameVariables["maxResilience"]){
+                            resilience = resilience+(1*gameVariables["resilienceBoostMultiplier"])
+                        }
+                        
+                    } else {
+                        minutesInMeetings = minutesInMeetings + minutePerPercent * gameVariables["minutesInMeetingsMultiplier"]
+                    }
+
+                    // Assume that minutesInMeetings and LevelRequirement are defined
+                    var progressBar = document.getElementById('progress-bar');
+
+                    // Calculate the progress as a percentage
+                    var progress = (minutesInMeetings / LevelRequirement) * 100;
+
+                    // Check if we've completed the target for this level
+                    if (progress > 100){
+                        clearPassageOfTimeInterval();
+                        levelComplete = true;
+
+                        var message = "Level Complete! ";
+                        if (challengeDict[levelNo+1] != null ){
+                            let levelObj = challengeDict[levelNo+1]
+
+                            console.log(`levelObj: ${JSON.stringify(levelObj)}`)
+
+                            if (levelObj["type"] == "new meeting"){
+                                message += "Adding in " + levelObj["text"];
+
+
+                                // Get function from dictionary
+                                var meetingFunction = levelObj["function"]
+
+                                console.log(meetingFunction)
+
+                                // Hide the perk buttons
+                                $("#perkButton1").hide();
+                                $("#perkButton2").hide();
+
+                                $("#continueButton").show();
+                                $('#continueButton').off().on('click', function() {
+                                    meetingFunction();
+                                    resetWeek(true);
+                                    $('#levelCompleteModal').hide();
+                                });
+                            }
+                            
+                        } else if (levelNo % 2 == 0){
+                            message += "Choose one: ";
+                                
+                                // Hide the continue button
+                                $("#continueButton").hide();
+
+                                // Show the perk buttons
+                                $("#perkButton1").show();
+                                $("#perkButton2").show();
+                                
+                                // Unbind any old click event handlers
+                                $("#perkButton1").off("click");
+                                $("#perkButton2").off("click");
+                                
+                                // Function pair 1
+                                var randomPositiveFunc1 = positiveFunctions[Math.floor(Math.random() * positiveFunctions.length)];
+                                var rPF1Function = randomPositiveFunc1["function"]
+                                var rPF1Name = randomPositiveFunc1["name"]
+
+                                var randomNegativeFunc1 = negativeFunctions[Math.floor(Math.random() * negativeFunctions.length)];
+                                var rNF1Function = randomNegativeFunc1["function"]
+                                var rNF1Name = randomNegativeFunc1["name"]
+
+                                // Function pair 2
+                                var randomPositiveFunc2 = positiveFunctions[Math.floor(Math.random() * positiveFunctions.length)];
+                                var rPF2Function = randomPositiveFunc2["function"]
+                                var rPF2Name = randomPositiveFunc2["name"]
+
+                                var randomNegativeFunc2 = negativeFunctions[Math.floor(Math.random() * negativeFunctions.length)];
+                                var rNF2Function = randomNegativeFunc2["function"]
+                                var rNF2Name = randomNegativeFunc2["name"]
+
+                                // Add text to the buttons
+                                $('#perkButton1').text(rPF1Name + ' but also ' + rNF1Name);
+                                $('#perkButton2').text(rPF2Name + ' but also ' + rNF2Name);
+
+                                
+                                // Bind the functions to the buttons
+                                $('#perkButton1').off().on('click', function() {
+                                    rPF1Function();
+                                    rNF1Function();
+                                    resetWeek(true);
+                                    $('#levelCompleteModal').hide();
+                                });
+
+                                $('#perkButton2').off().on('click', function() {
+                                    rPF2Function();
+                                    rNF2Function();
+                                    resetWeek(true);
+                                    $('#levelCompleteModal').hide();
+                                });
+                        } else {
+                            message += "Increasing meeting target";
+                        }
+                        
+                        // Display the message in the modal
+                        $("#levelCompleteMessage").text(message);
+                        
+                        // Show the modal
+                        $("#levelCompleteModal").show();
+
+                        setTimeout(() => {
+                            levelComplete = false
+                        }, 500)
+                        
+                        return;
+                    }
+
+
+                    // Unbind any previously attached click event handlers
+                    $("#continueButton").off("click");
+
+                    // Attach a new click event handler
+                    $("#continueButton").click(function() {
+                    // Hide the modal
+                    $("#levelCompleteModal").hide();
+                    
+                    // Hide the perk buttons
+                    $("#perkButton1").hide();
+                    $("#perkButton2").hide();
+                    $("continueButton").hide();
+
+                    // Unbind any old click event handlers
+                    $("#perkButton1").off("click");
+                    $("#perkButton2").off("click");
+
+                    resetWeek(true);
+                    });
+
+                    // Update the width of the progress bar
+                    progressBar.style.width = progress + '%';
+                }
+
+
+            }
+
+            
+            longTermMeetingLoad.unshift(inMeetingCheck);
+            mediumTermMeetingLoad.unshift(inMeetingCheck);
+            shortTermMeetingLoad.unshift(inMeetingCheck);
+            
+
+            if (longTermMeetingLoad.length > longTermLength) {
+                // Make sure longTermMeetingLoad is within max
+                longTermMeetingLoad.pop();
+            }
+
+            if (mediumTermMeetingLoad.length > mediumTermLength) {
+                // Make sure longTermMeetingLoad is within max
+                mediumTermMeetingLoad.pop();
+            }
+
+            if (shortTermMeetingLoad.length > shortTermLength){
+                // Make sure longTermMeetingLoad is within max
+                shortTermMeetingLoad.pop();
+            }
+
+
+            var proportionInMeetings = calculateMeetingTimeProportions(
+                [
+                    {
+                    "list": longTermMeetingLoad,
+                    "name": "longTermMeetingLoad",
+                    "weighting": 10
+                }, {
+                    "list": shortTermMeetingLoad,
+                    "name": "shortTermMeetingLoad",
+                    "weighting": 1
+                }, {
+                    "list": mediumTermMeetingLoad,
+                    "name": "mediumTermMeetingLoad",
+                    "weighting": 5
+                }
+            ]
+                );
+
+
+
+            // Assume that minutesInMeetings and LevelRequirement are defined
+            var minutesInMeetingsBar = document.getElementById('minutes-in-meetings');
+
+            // ProportionInMeetings max is 100%
+            if (proportionInMeetings >= 1){
+                proportionInMeetings = 1
+            }
+
+            // Update the width of the minutes in meetings bar
+            minutesInMeetingsBar.style.width = proportionInMeetings*100 + '%';
+
+            // Update colouring of the minutes in meetings
+            if (proportionInMeetings > 0.8){
+                if (!minutesInMeetingsBar.classList.contains("alert-progress-bar")){
+                    minutesInMeetingsBar.classList.add("alert-progress-bar")
+                }
+            } else {
+                if (proportionInMeetings < 0.7){
+                    if (minutesInMeetingsBar.classList.contains("alert-progress-bar")){
+                    minutesInMeetingsBar.classList.remove("alert-progress-bar")
+                }
+                }
+
+            }
+                
+
+
+
+            if (proportionInMeetings < (0.4 * gameVariables["meetingLeeway"]) && resilience < gameVariables["maxResilience"]){
+                resilience = resilience+(0.09*gameVariables["resilienceRecoveryMultiplier"])
+
+                if (proportionInMeetings < (0.2 * gameVariables["meetingLeeway"]) && resilience < gameVariables["maxResilience"]){
+                    resilience = resilience+(0.08*gameVariables["resilienceRecoveryMultiplier"])
+                }
+            }
+
+            if (proportionInMeetings > (0.5 * gameVariables["meetingLeeway"]) && resilience > 0){
+                resilience = resilience-0.07
+                if (proportionInMeetings > (0.7 * gameVariables["meetingLeeway"])){
+                    resilience = resilience-0.1
+                    if (proportionInMeetings > (0.9 * gameVariables["meetingLeeway"])){
+                        resilience = resilience-0.1
+                        if (proportionInMeetings > (0.95 * gameVariables["meetingLeeway"])){
+                            resilience = resilience-0.1
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+        // Assume that minutesInMeetings and LevelRequirement are defined
+    var resilienceBar = document.getElementById('resilience');
+
+    var resiliencePercent = (resilience/gameVariables["maxResilience"])*100
+
+    // Update the width of the progress bar
+    resilienceBar.style.width = resiliencePercent + '%';
+    
+
+    // If resilience is 0 then game over but also give coyote-time
+    if (resiliencePercent < 20){
+        if (!resilienceBar.classList.contains("alert-progress-bar")){
+            resilienceBar.classList.add("alert-progress-bar")
+        }
+    
+    if (resiliencePercent < 0.5){
+        setTimeout(() => {
+            if (resiliencePercent < 0.5){
+                if (!levelComplete && !gameOver){
+                    gameOver = true;
+                    alert("Game Over - you ran out of resilience");
+                    resetGame();
+                    return;
+                }
+            }
+        }, 500)
+    }
+} else if (resiliencePercent > 25){
+   if (resilienceBar.classList.contains("alert-progress-bar")){
+        resilienceBar.classList.remove("alert-progress-bar")
+        } 
+}
+    
+}
+
+
+
+function calculateMeetingTimeProportions(listOfLists){
+
+    var runningTotal = 0
+    var runningLength = 0
+    var runningProportion = []
+
+    for (let l of listOfLists){
+        let list = l["list"]
+        runningTotal = runningTotal+ list.reduce(function(a, b) {
+                return a + b;
+            }, 0)
+
+        let average = runningTotal / list.length
+
+        if (!average==null){
+            average = 0
+        }
+
+
+        let weighting = l["weighting"]
+
+        let outputList = new Array(weighting).fill(average);  // 1 if in meeting time, 0 if not
+
+        runningProportion = runningProportion.concat(outputList)
+    }
+    
+    // Get average proportion so that early list gets heavier weighting
+    var totalAvgs = (runningProportion.reduce(function(a, b) {
+                return a + b;
+            }, 0))
+
+    return totalAvgs/runningProportion.length
+}
+
+
+
+function setPassageOfTimeInterval(fast = false){
+    console.log("PASSAGE OF TIME INTERVAL")
+    
+    var timeDelay = gameVariables["normalInterval"]
+    if (fast){
+        timeDelay = gameVariables["fastInterval"]
+    }
+
+    console.log(`TIME DELAY: ${timeDelay}`)
+
+    var pasageOfTimeInterval = setInterval(() => showPassageOfTime(), timeDelay)
+
+    passageOfTimeList.push(pasageOfTimeInterval)
+}
+
+function clearPassageOfTimeInterval(){
+    for (let cd in passageOfTimeList){
+        if (cd != 0){
+            clearInterval(countdownIntervalList[cd])
+        }
+    };
+
+    passageOfTimeList = [];
+
+    console.log("Interval cleared");
+}
+
+function resetWeek(levelProgress){
+    console.log("RESETTING WEEK")
+
+    // Reset max week number
+    $('#max-week-num').text(parseInt(gameVariables["maxWeekNum"]));
+
+    // Increment the week number & write to visible variable
+    weekNum++
+    // Update the counter display
+    $('#week-num').text(parseInt(weekNum));
+
+    if (weekNum > gameVariables["maxWeekNum"] && !levelProgress){
+        alert("Game Over - you ran out of time")
+        resetGame();
+    }
+
+
+    // Reset the week
+    $(".inexorable-passage-of-time").css("height", "0%");
+
+    
+
+    if (levelProgress){
+        // Remove remaining blocks
+        $(".working-hours .block").remove();
+
+        // Increase level requirement threshold
+        LevelRequirement += gameVariables["baseLevelAddition"]*gameVariables["levelRequirementMultiplier"]
+
+        // Reset progress
+        minutesInMeetings = 0
+        var progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = 0 + '%';
+
+        // Reset week number
+        weekNum = 1
+
+        // Update the counter display
+        $('#week-num').text(parseInt(weekNum));
+
+
+        // Increment level number
+        levelNo++
+        $('#level-num').text(parseInt(levelNo));
+
+    } else {
+        // Remove all blocks except for the recurring meetings
+        $(".working-hours .block").not('.weekly-recurring').remove();
+        // If there ARE any recurring meetings - make them immovable
+        $('.column > .weekly-recurring').data('notMoveable', "true");
+    }
+
+
+
+
+    if (gameVariables["blockedPersonalTime"] > 0){ 
+
+        console.log("adding personal blocks")
+
+        // Remove previously added personal blocks
+        $(".blocked-out-personal").removeClass("blocked-out-personal")
+
+        // Add in personal blocks if they are switched on
+        $('.time-slot').each(function() {
+        if (Math.random()*gameVariables["blockedPersonalTime"] < 200) {
+            $(this).addClass('blocked-out-personal');
+        }
+        });
+    }
+
+
+
+    // Restart passage of time
+    setPassageOfTimeInterval();
+}
+
+$("#fast-forward").on('mousedown touchstart', function() {
+    // When the button is pressed, decrease the interval
+    if (!levelComplete){
+    clearPassageOfTimeInterval();
+    setPassageOfTimeInterval(true);
+}
+});
+
+$("#fast-forward").on('mouseup mouseleave touchend', function() {
+    // When the button is released or the cursor leaves the button, restore the original interval
+    clearPassageOfTimeInterval();
+    if (!levelComplete){
+        setPassageOfTimeInterval();
+    }
+});
+
+
+// Increment the week number & write to visible variable
+    weekNum++
+    // Update the counter display
+    $('#week-num').text(parseInt(weekNum));
+
+
+// Handle start countdown
+
+let countdownNumber = gameVariables["countdownNumber"];
+let countdownIntervalList = [];
+
+
+// Handle passage of time
+var passageOfTimeList = [];
+
+
+$('#start-button').on('click', function() {
+    $('#start-screen').hide();
+    $('#countdown').show();
+    let countdownInterval = setInterval(function() {
+        if (countdownNumber > 0) {
+            $('#countdown').text(countdownNumber);
+            countdownNumber--;
+        } else {
+            for (let cd of countdownIntervalList){
+                    clearInterval(cd);
+                }
+            $('#overlay').hide();
+            setPassageOfTimeInterval();
+        }
+    }, 1000);
+    countdownIntervalList.push(countdownInterval)
+});
+
+
+
+
+</script>
