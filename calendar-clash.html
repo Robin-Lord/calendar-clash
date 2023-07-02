@@ -1990,7 +1990,7 @@ function setPassageOfTimeInterval(fast = false){
 function clearPassageOfTimeInterval(){
     for (let cd in passageOfTimeList){
         if (cd != 0){
-            clearInterval(countdownIntervalList[cd])
+            clearInterval(passageOfTimeList[cd])
         }
     };
 
