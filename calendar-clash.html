@@ -1549,15 +1549,7 @@ function showPassageOfTime(){
     if (passageOfTimeList.length > 1){
         var tempList = [];
         console.log(`MORE THAN 1 INTERVAL IN EFFECT; ${passageOfTimeList.length}`)
-        for (let cd in passageOfTimeList){
-            var tempCD = passageOfTimeList.pop(0)
-            if (cd != 0){
-                clearInterval(tempCD)
-            } else {
-                tempList.push(tempCD)
-            }
-        }
-        passageOfTimeList = [...tempList]
+        clearPassageOfTimeInterval(true);
     }
 
 
@@ -1987,14 +1979,19 @@ function setPassageOfTimeInterval(fast = false){
     passageOfTimeList.push(pasageOfTimeInterval)
 }
 
-function clearPassageOfTimeInterval(){
+function clearPassageOfTimeInterval(cleanup = false){
+    var tempPassageOfTimeList = [];
+
     for (let cd in passageOfTimeList){
-        if (cd != 0){
+        if (cleanup && cd == 0){
+            tempPassageOfTimeList.push(passageOfTimeList[cd])
+            continue
+        } else {
             clearInterval(passageOfTimeList[cd])
         }
     };
 
-    passageOfTimeList = [];
+    passageOfTimeList = [...tempPassageOfTimeList];
 
     console.log("Interval cleared");
 }
