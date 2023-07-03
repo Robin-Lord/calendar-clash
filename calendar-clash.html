@@ -1,348 +1,32 @@
-<style>
-#game-board {
-    display: flex;
-    justify-content: space-around;
-    height: 60vh; /* Adjust this based on your layout */
-    position: relative;
-    margin-top: 10px;
-    overflow: hidden;
-}
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-.column-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 12%; /* Adjust this based on your layout */
-}
-
-.day-label {
-    text-align: center;
-    padding: 10px 0;
-    font-weight: bold;
-    font-size: 20px;
-}
-
-.column {
-    background-color: #ddd;
-    height: 100%;
-    position: relative;
-    border: 1px solid black;
-    /* overflow: hidden; */
-    width: 100%;
-}
-
-
-.time-slots {
-    position: absolute;
-    /* left: -60px; */
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    font-size: 12px;
-    color: #555;
-    pointer-events: none;
-}
-
-.time-slot {
-    height: 10%;
-    display: flex;
-    padding-right: 5px;
-    pointer-events: none;
-}
-
-.pre-hours {
-    background-color: lightgray !important;
-}
-
-.lunch-hours {
-    background-color: lightgray !important;
-}
-
-.post-hours {
-    background-color: lightgray !important;
-}
-
-
-.horizontal-line {
-    position: absolute;
-    width: 100%;
-    border-bottom: 1px solid #999;
-    top: 40px;
-    z-index: -1;
-}
-
-.block {
-    position: absolute;
-    width: 100%; /* Adjust this based on your layout */
-    background-color: #e3b3cc; /* Example pastel color */
-    border-radius: 5px; /* Add rounded corners */
-    overflow-y: hidden;
-}
-
-.triple-meeting::before,
-.triple-meeting::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 2%; /* Change this to adjust the thickness of the lines */
-    background: white;
-}
-
-.triple-meeting::before {
-    left: 33%;
-}
-
-.triple-meeting::after {
-    left: 66%;
-}
-
-
-.same-day-follow-up::before,
-.same-day-follow-up::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 2%; /* Change this to adjust the thickness of the lines */
-    background: white;
-}
-
-.same-day-follow-up::before {
-    top: 48%;
-}
-
-.same-day-follow-up::after {
-    top: 52%;
-}
-
-
-
-
-.dragging {
-    position: absolute !important;
-    width: 50vw !important;
-    box-sizing: border-box;
-    box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.2); /* Horizontal shadow, vertical shadow, blur, color */
-}
-
-
-
-
-
-
-.working-hours {
-    background-color: white;
-}
-
-.working-hours .time-slots > .time-slot:nth-child(-n+3) {
-    background-color: inherit; /* Restore default background color for time slots before 9am */
-}
-
-.inexorable-passage-of-time {
-    position: absolute;
-    width: 100%;
-    background-color: rgba(128, 128, 128, 0.8); /* semi-transparent grey */
-    z-index: 100;
-    pointer-events: none;
-    top: 0;
-    transition-timing-function: linear;
-    transition-duration: 0.2s;
-}
-
-.overlay {
-    position: absolute;
-    width: 100%;
-    background-color: rgba(128, 128, 128, 0.5); /* semi-transparent grey */
-    z-index: 10;
-}
-
-.overlay-before {
-    height: 20%; /* 8am is at 1/3 of the day */
-    top: 0;
-    pointer-events: none;
-}
-
-.overlay-after {
-    height: 27%; /* 4pm is at 2/3 of the day */
-    bottom: 0;
-    pointer-events: none;
-}
-
-
-
-
-#incoming-blocks {
-    width: 12%;
-    height: 100%;
-    position: relative;
-    border: 1px solid black; /* added border for visibility */
-    background-color: #eee; /* added background for visibility */
-}
-
-
-#incoming-blocks > div {
-    display: block;
-    margin-bottom: 10px;
-}
-
-
-/* Counters and progress bars */
-
-#counters {
-    position: absolute;
-    display: block;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    font-weight: bold;
-    color: red;
-
-}
-
-.progress-bar-container {
-    width: 100%;
-    height: 20px;
-    background-color: #f3f3f3;
-    border-radius: 5px;
-}
-
-.visible-progress-bar {
-    height: 100%;
-    width: 0%;
-    background-color: #4caf50;
-    border-radius: 5px;
-    transition: width 0.5s;
-}
-
-.alert-progress-bar{
-    background-color: #af4c4c !important;
-}
-
-#fast-forward {
-    display: inline-block;
-    width: 50%;
-    margin: 20px auto;
-    padding: 10px 0;
-    background-color: #007BFF; /* You can choose your own color */
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    border-radius: 5px; /* Rounded corners */
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Shadow for 3D effect */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Animation for hover effect */
-    -webkit-user-select: none;  /* Chrome, Safari, Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE 10+/ Edge */
-    user-select: none;          /* Standard syntax */
-}
-
-#fast-forward:hover {
-    background-color: #0056b3; /* Darker shade for hover effect */
-    transform: scale(1.05); /* Slightly enlarges button on hover */
-}
-
-#fast-forward:active {
-    transform: scale(0.95); /* Slightly shrinks button on click */
-}
-
-
-
-/* Weekly recurring */
-
-
-
-/* Heavy meetings */
-.heavy {
-    background-color: black !important;
-    color: white !important;
-}
-
-
-/* Initial overlay */
-
-#overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    z-index: 9999;
-}
-
-#start-button {
-    font-size: 2em;
-    padding: 20px;
-}
-
-#countdown {
-    display: none;
-    font-size: 3em;
-}
-
-
-
-/* Blocked off times */
-.blocked-out{
-    background-color: #555 !important;
-}
-
-.blocked-out-personal{
-    background-color: #555 !important;
-}
-
-/* Styling for other blocks when there is an overlap */
-.grey-out { opacity: 0.5; background-color: grey; }
-
-
-
-/* Level complete styling */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-    font-size: larger;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.con-but {
-    font-size: large;
-}
-
-
-
-
-
-</style>
+<link href="./calendar-clash-assets/cc.css" rel="stylesheet">
 
 <!-- Level complete overlay -->
 <div id="levelCompleteModal" class="modal">
-    <div class="modal-content">
-        <p id="levelCompleteMessage"></p>
-        <button id="perkButton1" class="con-but" style="display: none;">Perk 1</button>
-        <button id="perkButton2" class="con-but" style="display: none;">Perk 2</button>
-        <button id="continueButton" class="con-but">Continue</button>
+
+    <div class="modal-content"></div>
+
+    <table class="cal-style-display">
+        <tr>
+            <td>
+                Level complete!
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p id="levelCompleteMessage"></p>
+                <button id="perkButton1" class="con-but interactive-button" style="display: none;">Perk 1</button>
+                <button id="perkButton2" class="con-but interactive-button" style="display: none;">Perk 2</button>
+                <button id="continueButton" class="con-but interactive-button">Continue</button>
+            </td>
+        </tr>
+
+    </table>
+
+    
+        
+        
     </div>
 </div>
 <!-- End level complete overlay -->
@@ -350,30 +34,191 @@
 
 
 <div id="overlay">
-    <div id="start-screen">
-        <button id="start-button">START</button>
+
+ <div id="start-screen">
+            <table>
+        <tr>
+            <td style="text-align: center;"><img id="starting-logo" src="./calendar-clash-assets/images/logo.png" ></td>
+        </tr>
+        <tr>
+            <td style="text-align: center;">
+        
+
+        <h1>Welcome to Calendar Clash</h1>
+
+        <p>Ever wondered why you spending so much of your life organising meetings in your calendar, wasting your time and talents for a paycheque?</p>
+
+        <p>Well now you can do it for internet points instead!</p>
+
+        <div class="tabs">
+    <input type="radio" name="tabs" id="tab1" checked>
+    <label for="tab1"><strong>Aim of the game</strong></label>
+
+    <input type="radio" name="tabs" id="tab2">
+    <label for="tab2"><strong>How to beat a level</strong></label>
+
+    <input type="radio" name="tabs" id="tab3">
+    <label for="tab3"><strong>Placing meetings</strong></label>
+
+    <input type="radio" name="tabs" id="tab4">
+    <label for="tab4"><strong>Game over</strong></label>
+
+    <div class="content" id="content1">
+        <h2>Aim of the game</h2>
+        <p>Complete as many levels as possible by moving meetings from the "unscheduled" section into a place in the calendar view</p>
+        <img src="./calendar-clash-assets/images/how-to/full-screen-view.png" width="80%">
     </div>
-    <div id="countdown"></div>
+    <div class="content" id="content2">
+        <h2>How to beat a level</h2>
+        <p>Each level has a "time in meetings" requirement. As time passes - every minute spent in a meeting will add to your progress</p>
+
+        <img src="./calendar-clash-assets/images/how-to/progress-bar.png" width="80%">
+
+        <p>Time passing is shown by the green shading which slowly fills each day of the calendar.</p>
+
+        <img src="./calendar-clash-assets/images/how-to/time-passing.png" width="80%">
+    </div>
+    <div class="content" id="content3">
+        <h2>Placing meetings</h2>
+        <p>Pick up and drag one of the meetings to any time in the calendar. 
+            As long as it's not in "the past".
+        (If you try to put a meeting somewhere and it overlaps with the "time passed" shading - 
+        that meeting will jump back to where you got it from.)</p>
+
+        <img src="./calendar-clash-assets/images/how-to/place-meeting-passed-time.png" width="80%">
+
+        <p>If you put a meeting in "non-working hours" (before 9am, after 5pm, or during lunch) that will hurt your "resilience" and make you more likely to lose the level (but it won't cause you to lose instantly).</p>
+
+        <img src="./calendar-clash-assets/images/how-to/non-working-hours.png" width="80%">
+
+        <p>If you put two meetings overlapping with each other - you have three seconds to fix the "Calendar Clash" before Game Over</p>
+        
+        <img src="./calendar-clash-assets/images/how-to/calendar-clash-countdown.png" width="80%">
+    </div>
+    <div class="content" id="content4">
+        <h2>Game over</h2>
+
+        <p>There are three ways to lose;</p>
+
+        <h3>1. Calendar Clash</h3>
+        <img src="./calendar-clash-assets/images/how-to/calendar-clash-countdown.png" width="80%">
+        <p>If you put two meetings so that they overlap you will have 3 seconds to fix it, otherwise you'll get a game over</p>
+        
+
+        <h3>2. Running out of time</h3>
+        <img src="./calendar-clash-assets/images/how-to/week-tracking.png" width="80%">
+        <p>Each level has an increasing target for "minutes in meetings", you progress towards that target as the green shaded area passes over the meetings you have put in.</p>
+        <p>At default you have 4 "weeks" to meet your target each level - if you don't do it in time you'll get a game over</p>
+
+        <h3>3. Running out of resilience</h3>
+        <img src="./calendar-clash-assets/images/how-to/progress-meeting-resillience.png" width="80%">
+        <p>You start with full "resilience". As you attend meetings you'll see your "meeting load" bar go up.</p>
+        <p>When your "meeting load" is high, your resilience will go down (the higher the meeting load, the faster your resilience will be drained). WHen you "meeting load" is low your resilience will slowly recover.</p>
+        <p>The best idea is to plan time in between meetings so that the "meeting load" bar goes down and it doesn't hurt your resilience too much.</p>
+        <p>If you plan meetings outside of "working hours" (before 9am, after 5pm, or during lunch) that will have a bigger impact on your resilience.</p>
+        <p>If your resilience bar gets to 0 you'll get Game Over.</p>
+    </div>
+</div>
+
+
+        
+        
+        
+                
+            
+        
+
+
+    
+
+
+
+        </td>
+        </tr>
+        <tr>
+            <td>
+                <button  class="interactive-button" id="start-button">START</button>
+            </td>
+        </tr>
+    </table>
+    </div>
+            
+    
+    
+    <div id="countdown">
+        <img id="starting-logo" src="./calendar-clash-assets/images/logo.png">
+        <table class="cal-style-display">
+            <tr>
+                <td>
+                    GET READY TO PLAY!
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span id="countdown-text"></span>
+                </td>
+            </tr>
+
+        </table>
+    </div>
 </div>
 <div id="main-content">
 
-<h1>CALENDAR CLASH</h1>
-<h2>Level: <span id="level-num">1</span></h2>
+    <div id="calendar-clash-countdown">
+    <table class="cal-style-display">
+        <tr>
+            <td>
+                CALENDAR CLASH!
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span id="clash-countdown"></span>
+            </td>
+        </tr>
 
-Week <span id="week-num">0</span>/<span id="max-week-num">4</span>
+    </table>
+</div>
 
-Level progress: <div class="progress-bar-container">
+<table id="banner-holder">
+    <tbody>
+        <tr>
+            <td id="banner-holder-cell">
+                <img id="logo-banner" src="./calendar-clash-assets/images/logo.png" alt="Calendar Clash logo">
+            </td>
+            <td>
+                <table class="cal-style-display">
+                    <tr>
+                        <td>LEVEL <span id="level-num">1</span></td>
+                    </tr>
+                    <tr>
+                        <td>
+                        Week <span id="week-num">0</span>/<span id="max-week-num">4</span>
+                        </td>
+
+                        
+                    </tr>
+                </table>
+            </td>
+            <td id="progress-cell">
+    <div class="progress-bar-container">
+    <h2>Progress</h2>
     <div class="visible-progress-bar" id="progress-bar"></div>
 </div>
-
-
-Meeting load: <div class="progress-bar-container">
+<div class="progress-bar-container">
+    <h2>Meeting&nbsp;load</h2>
     <div class="visible-progress-bar" id="minutes-in-meetings"></div>
 </div>
-
-Resilience: <div class="progress-bar-container">
+<div class="progress-bar-container">
+    <h2>Resilience</h2>
     <div class="visible-progress-bar" id="resilience"></div>
 </div>
+
+</td>
+
+        </tr>
+    </tbody>
+</table>
 
 
 
@@ -471,13 +316,14 @@ Resilience: <div class="progress-bar-container">
     </div>
 
 
-
-
-    <div id="incoming-blocks"></div>
+    
+    <div id="incoming-blocks">
+        <div id="unscheduled-label">Unscheduled</div>
+    </div>
 
 </div>
 
-<button id="fast-forward">Fast Forward</button>
+<button class="interactive-button" id="fast-forward">Fast Forward</button>
 
 </div>
 
@@ -723,14 +569,6 @@ var challengeDict = {
 
 
 $(function() {
-
-
-
-
-    // Prevent page from accidentally reloading if user on mobile and drags down
-    window.addEventListener('touchmove', function(e) {
-    e.preventDefault();
-    }, { passive: false });
 
 
 
@@ -1352,16 +1190,22 @@ function handleOverlaps(block, column, slotHeight){
     if (isOverlap(block, column, false)) {
         // start countdown and display it
         var countdown = 3; // in seconds
-        var countdownDisplay = $('<div/>', { id: 'countdown', text: countdown }).appendTo('body');
-
+        $('#calendar-clash-countdown').css("visibility", "visible")
+        $('#clash-countdown').text(countdown)
+            .animate({ fontSize: '2em' }, 500)
+            .animate({ fontSize: '1em' }, 500);
+        
         var countdownInterval = setInterval(function() {
             countdown--;
-            countdownDisplay.text(countdown);
+            $('#clash-countdown').text(countdown)
+            .animate({ fontSize: '2em' }, 500)
+            .animate({ fontSize: '1em' }, 500);
+            
             if (countdown === 0) {
                 for (let cd of countdownIntervalList){
                     clearInterval(cd);
                 }
-                countdownDisplay.remove();
+                $('#calendar-clash-countdown').css("visibility", "hidden")
                 // end game here
                 alert('Game Over - you put one meeting on top of another');
                 resetGame();
@@ -1381,7 +1225,7 @@ function handleOverlaps(block, column, slotHeight){
                     clearInterval(cd);
                     }
                     clearInterval(overlapCheckInterval);
-                    countdownDisplay.remove(); // remove the countdown display
+                    $('#calendar-clash-countdown').css("visibility", "hidden")
                     $(".grey-out").removeClass("grey-out")
                 }
         }, 500); // check twice per second
@@ -1674,7 +1518,7 @@ function showPassageOfTime(){
                         clearPassageOfTimeInterval();
                         levelComplete = true;
 
-                        var message = "Level Complete! ";
+                        var message = "";
                         if (challengeDict[levelNo+1] != null ){
                             let levelObj = challengeDict[levelNo+1]
 
@@ -2005,7 +1849,12 @@ function resetWeek(levelProgress){
     // Increment the week number & write to visible variable
     weekNum++
     // Update the counter display
-    $('#week-num').text(parseInt(weekNum));
+    $('#week-num').text(parseInt(weekNum))
+    .animate({ fontSize: '2em' }, 500)
+    .animate({ fontSize: '1em' }, 500);
+
+    
+
 
     if (weekNum > gameVariables["maxWeekNum"] && !levelProgress){
         alert("Game Over - you ran out of time")
@@ -2039,7 +1888,9 @@ function resetWeek(levelProgress){
 
         // Increment level number
         levelNo++
-        $('#level-num').text(parseInt(levelNo));
+        $('#level-num').text(parseInt(levelNo))
+        .animate({ fontSize: '2em' }, 500)
+        .animate({ fontSize: '1em' }, 500);;
 
     } else {
         // Remove all blocks except for the recurring meetings
@@ -2106,11 +1957,21 @@ var passageOfTimeList = [];
 
 
 $('#start-button').on('click', function() {
+
+    // Prevent page from accidentally reloading if user on mobile and drags down
+    window.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    }, { passive: false });
+
+    
     $('#start-screen').hide();
     $('#countdown').show();
+    $('#countdown').css({"display": "block"});
     let countdownInterval = setInterval(function() {
         if (countdownNumber > 0) {
-            $('#countdown').text(countdownNumber);
+            $('#countdown-text').text(countdownNumber)
+            .animate({ fontSize: '2em' }, 500)
+            .animate({ fontSize: '1em' }, 500);
             countdownNumber--;
         } else {
             for (let cd of countdownIntervalList){

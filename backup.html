@@ -1,0 +1,470 @@
+
+<div id="block-counter">0</div>
+
+
+
+<div id="game-board">
+    <div class="column-wrapper">
+        <div class="day-label">Monday</div>
+    <div class="column working-hours" id="column1">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div>
+        <div class="time-slots">
+            <div class="time-slot">7:00 AM</div>
+            <div class="time-slot">9:00 AM</div>
+            <div class="time-slot">11:00 AM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">3:00 PM</div>
+            <div class="time-slot">5:00 PM</div>
+            <div class="time-slot">7:00 PM</div>
+        </div>
+    </div>
+    </div>
+    <div class="column-wrapper">
+        <div class="day-label">Tuesday</div>
+    <div class="column working-hours" id="column2">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div>
+        <div class="time-slots">
+            <div class="time-slot">7:00 AM</div>
+            <div class="time-slot">9:00 AM</div>
+            <div class="time-slot">11:00 AM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">3:00 PM</div>
+            <div class="time-slot">5:00 PM</div>
+            <div class="time-slot">7:00 PM</div>
+        </div>
+    </div>
+    </div>
+
+    <div class="column-wrapper">
+        <div class="day-label">Wednesday</div>
+    <div class="column working-hours" id="column3">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div>
+        <div class="time-slots">
+            <div class="time-slot">7:00 AM</div>
+            <div class="time-slot">9:00 AM</div>
+            <div class="time-slot">11:00 AM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">3:00 PM</div>
+            <div class="time-slot">5:00 PM</div>
+            <div class="time-slot">7:00 PM</div>
+        </div>
+    </div>
+    </div>
+
+
+<div class="column-wrapper">
+        <div class="day-label">Thursday</div>
+    <div class="column working-hours" id="column4">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div>
+        <div class="time-slots">
+            <div class="time-slot">7:00 AM</div>
+            <div class="time-slot">9:00 AM</div>
+            <div class="time-slot">11:00 AM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">3:00 PM</div>
+            <div class="time-slot">5:00 PM</div>
+            <div class="time-slot">7:00 PM</div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="column-wrapper">
+        <div class="day-label">Friday</div>
+    <div class="column working-hours" id="column5">
+        <div class="inexorable-passage-of-time" style="height:0%"></div>
+        <div class="overlay overlay-before"></div>
+        <div class="overlay overlay-after"></div>
+        <div class="time-slots">
+            <div class="time-slot">7:00 AM</div>
+            <div class="time-slot">9:00 AM</div>
+            <div class="time-slot">11:00 AM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">3:00 PM</div>
+            <div class="time-slot">5:00 PM</div>
+            <div class="time-slot">7:00 PM</div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+    <div id="incoming-blocks"></div>
+
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+
+
+<script>
+
+
+
+    console.log("Starting")
+
+$(function() {
+    var blockSize = 10; 
+    var minBlockHeight = blockSize; 
+    var maxBlockHeight = 5 * blockSize; 
+
+    var slotHeight = $('#game-board').height() / 72; 
+
+
+    var blockCounter = 0; 
+
+
+function reshuffleBlocks() {
+    var $blocks = $('#incoming-blocks').children('.block');
+    var top = 0;
+    $blocks.each(function() {
+        $(this).css({ top: top, left: 0 });
+        top += $(this).outerHeight() + 5; 
+    });
+}
+
+
+
+
+
+var blockNumber = 0;
+
+
+ function createBlock(height = null) {
+     if ($('#incoming-blocks > .block').length >= 10) {
+        return; 
+    }
+
+    var height = Math.round(Math.random() * (maxBlockHeight - minBlockHeight) / blockSize) * blockSize + minBlockHeight;
+
+
+    var $block = $('<div>').addClass('block').height(height);
+
+if (height !== null) {
+        $block.css('top', height);
+    }
+
+
+    var hue = Math.floor(Math.random() * 360);
+    var pastelColor = 'hsl(' + hue + ', 80%, 80%)';
+    $block.css('background-color', pastelColor);
+
+
+
+    blockNumber++;
+
+
+    if (blockNumber % 2 === 0) {
+        $block.css('background-color', 'red');
+    }
+
+
+    var blockDuration = height / blockSize * 10;  
+    $block.text(blockDuration + " min");  
+
+    reshuffleBlocks(); 
+
+    $block.appendTo('#incoming-blocks');
+
+     reshuffleBlocks(); 
+
+
+
+
+    var top = 0;
+    var left = 0;
+    var $blocks = $('#incoming-blocks').children('.block');
+    if ($blocks.length > 1) {
+        var lastBlock = $blocks.last();
+        var lastBlockTop = lastBlock.position().top;
+        var lastBlockHeight = lastBlock.outerHeight();
+        top = lastBlockTop + lastBlockHeight + 5; 
+    }
+
+    $block.css({ top: top, left: left });
+
+
+
+   $block.draggable({
+    revert: "invalid",
+    helper: "original",
+    scroll: false,
+    containment: "window",
+    start: function(event, ui) {
+            $(this).css('z-index', 1000);  
+            var originalPosition = $(this).position();
+            var originalPositionTop = originalPosition.top;
+            var originalPositionBottom = originalPositionTop+$block.outerHeight();
+            var pm4Position = $('.time-slot:contains("5:00 PM")').first().position().top;
+            var am8Position = $('.time-slot:contains("9:00 AM")').first().position().top;
+            console.log(`og position: ${JSON.stringify(originalPosition)}`)
+            $(this).data('originalParent', $(this).parent().attr('id'));
+            $(this).data('wasOutsideHours', originalPositionTop < am8Position || originalPositionBottom > pm4Position);
+            $(this).data('originalPosition', originalPosition);
+            $(this).data('placement', "inbox");
+        },
+    stop: function(event, ui) {
+        $(this).css('z-index', ''); 
+
+        if (blockNumber % 2 === 0 && $(this).parent().hasClass('column')) {
+                var columnId = $(this).parent().attr('id');
+                var nextColumnId1 = getNextColumnId(columnId);
+                var nextColumnId2 = getNextColumnId(nextColumnId1);
+                var height = $(this).css('top');
+                setTimeout(function() { createBlockInColumn(nextColumnId1, height); }, 10);
+                setTimeout(function() { createBlockInColumn(nextColumnId2, height); }, 20);
+            }
+    }
+});
+
+
+
+
+
+
+
+        /
+
+
+$('.column').droppable({
+    accept: '.block',
+        drop: function(event, ui) {
+        var $column = $(this);
+        var $block = ui.helper;
+
+
+        var columnOffset = $column.offset();
+        var top = columnOffset ? ui.offset.top - columnOffset.top : 0;
+        var nearestSlot = Math.round(top / slotHeight) * slotHeight;
+
+
+        var $timePassage = $column.find('.inexorable-passage-of-time');
+        var timePassageBottom = $timePassage.position().top + $timePassage.outerHeight();
+        var blockBottom = nearestSlot + $block.outerHeight();
+
+        if(top < timePassageBottom){
+
+            $block.css($block.data('originalPosition'));  
+            $block.appendTo('#'+$block.data('originalParent'));  
+            return;
+        }
+
+
+
+        var pm4Position = $column.find('.time-slot:contains("5:00 PM")').position().top;
+        var am8Position = $column.find('.time-slot:contains("9:00 AM")').position().top;
+
+
+
+        var blockBottomPosition = nearestSlot + $block.outerHeight();
+        var blockTopPosition = nearestSlot;
+
+
+        var wasOutsideHours = $block.data('wasOutsideHours');
+        var originalParent = $block.data('originalParent');
+
+
+        var previouslyOutside = (wasOutsideHours && originalParent!= 'incoming-blocks')
+        var nowOutsideHours = (blockBottomPosition > pm4Position || blockTopPosition < am8Position)
+
+
+        if (!previouslyOutside && nowOutsideHours){
+            $block.previouslyOutside = true
+            blockCounter++;
+        } else if (previouslyOutside && !nowOutsideHours){
+            $block.previouslyOutside = false
+            blockCounter--;
+        }
+
+
+
+        $('#block-counter').text(blockCounter);
+
+    $block.css({ top: nearestSlot, left: '0px' });
+    $block.appendTo($column);
+
+
+if (isOverlap($block, $column, true)) { 
+
+    $block.css('top', $block.position().top - slotHeight);
+
+
+    if (isOverlap($block, $column, false)) {
+
+        var countdown = 3; 
+        var countdownDisplay = $('<div/>', { id: 'countdown', text: countdown }).appendTo('body');
+
+        var countdownInterval = setInterval(function() {
+            countdown--;
+            countdownDisplay.text(countdown);
+            if (countdown === 0) {
+                clearInterval(countdownInterval);
+                countdownDisplay.remove();
+
+                alert('Game Over');
+            }
+        }, 1000);
+
+
+        var overlapCheckInterval = setInterval(function() {
+           if (!isOverlap($block, $column, false)) {
+
+                    clearInterval(countdownInterval);
+                    clearInterval(overlapCheckInterval);
+                    countdownDisplay.remove(); 
+                }
+        }, 500); 
+    } else {
+
+        $block.draggable({
+            revert: "invalid",
+            helper: "original",
+            scroll: false,
+            containment: "window",
+            start: function(event, ui) {
+            $(this).css('z-index', 1000);  
+            var originalPosition = $(this).position().top;
+            var pm4Position = $('.time-slot:contains("5:00 PM")').first().position().top;
+            var am8Position = $('.time-slot:contains("9:00 AM")').first().position().top;
+            $(this).data('originalParent', $(this).parent().attr('id'));
+            $(this).data('wasOutsideHours', originalPosition < am8Position || originalPosition > pm4Position);
+            $(this).data('originalPosition', originalPosition);
+            $(this).data('placement', "inbox");
+        },
+
+            stop: function(event, ui) {
+                $(this).css('z-index', ''); 
+            }
+        });
+    }
+}
+
+}
+
+
+});
+
+
+
+
+    }
+
+function isOverlap($block, $column, adjust) {
+    var blockTop = $block.position().top;
+    var blockBottom = blockTop + $block.outerHeight();
+    var blockLeft = $block.position().left;
+    var blockRight = blockLeft + $block.outerWidth();
+
+    var overlap = false;
+
+    $column.children('.block').each(function() {
+        if (this === $block[0]) {
+            return true; 
+        }
+
+        var $this = $(this);
+        var thisTop = $this.position().top;
+        var thisBottom = thisTop + $this.outerHeight();
+        var thisLeft = $this.position().left;
+        var thisRight = thisLeft + $this.outerWidth();
+
+        if (
+            blockTop < thisBottom && blockBottom > thisTop &&
+            blockLeft < thisRight && blockRight > thisLeft
+        ) {
+            overlap = true;
+
+            return false;
+        }
+    });
+
+    if (overlap && adjust) {
+
+        var newTop = blockTop - slotHeight;
+        if (newTop >= 0) {
+            $block.css('top', newTop);
+            if (!isOverlap($block, $column, false)) {
+                overlap = false; 
+            } else {
+                $block.css('top', blockTop); 
+            }
+        }
+
+
+        if (overlap) {
+            newTop = blockTop + slotHeight;
+            if (newTop + $block.outerHeight() <= $column.height()) {
+                $block.css('top', newTop);
+                if (!isOverlap($block, $column, false)) {
+                    overlap = false; 
+                } else {
+                    $block.css('top', blockTop); 
+                }
+            }
+        }
+    }
+
+    return overlap;
+}
+
+
+function getNextColumnId(columnId) {
+
+    var columnNumber = parseInt(columnId.replace('column', '')) + 1;
+
+
+    if (columnNumber > 5) {
+        columnNumber = 1;
+    }
+
+    return 'column' + columnNumber;
+}
+
+function createBlockInColumn(columnId, height = null) {
+    var $block = createBlock(height);
+    $block.appendTo('#' + columnId);
+}
+
+
+
+
+
+
+    setInterval(createBlock, 1000); 
+});
+
+
+function showPassageOfTime(){
+    var noAvailableColumn = true;
+    var colNumber = 1
+    while (noAvailableColumn){
+        var column = document.querySelector("#column"+colNumber)
+        var greyBlock = column.querySelector(".inexorable-passage-of-time")
+        var height = greyBlock.style.height
+        height = parseInt(height)
+        if (height >= 100){
+            colNumber++
+            continue
+        } else {
+            noAvailableColumn = false
+            height = height+1
+            height = String(height)+"%"
+            greyBlock.style.height = height
+        }
+    }
+}
+
+setInterval(() => showPassageOfTime(), 200)
+
+</script>

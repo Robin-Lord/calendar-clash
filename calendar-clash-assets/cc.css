@@ -1,0 +1,592 @@
+/* =========================================== */
+
+/* General styling */
+
+h1{
+    color: darkolivegreen;
+}
+
+h2{
+    color: darkolivegreen;
+}
+
+p{
+    font-size: large;
+}
+
+/* End general styling */
+
+/* =========================================== */
+
+/* LOGO AND HEADER SECTION */
+
+
+#logo-banner {
+    width: 25vw;
+}
+
+
+#banner-holder tr td{
+    width: 25vw;
+}
+
+
+/* LEVEL DISPLAY DETAILS */
+
+.cal-style-display {
+    width: 70%;
+    height: 10vw;
+    transform: rotate(-10deg);
+    box-shadow: 2px 2px 5px 0px rgba(128,128,128,0.5);
+    margin-left: 15%;
+    margin-right: auto;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.cal-style-display tr:first-child {
+    background-color: darkolivegreen;
+    color: white;
+    text-align: center;
+    margin-right: auto;
+    margin-left: 20%;
+    height:10px;
+
+}
+
+.cal-style-display tr:first-child + tr td h2 {
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    color: darkblue;
+}
+
+.cal-style-display tr:nth-of-type(2) >td {
+    background-color: white;
+    text-align: center;
+    margin-right: auto;
+
+}
+
+
+/* Progress cell details */
+
+#progress-cell{
+    width: 45vw !important;
+}
+
+/* Media query for screen width below a certain number */
+
+@media screen and (max-width: 500px) {
+    #logo-banner {
+        width: 100%;
+        display: block;
+    }
+
+    #banner-holder tr td {
+        display: block;
+        width: 100%;
+    }
+
+    #progress-cell{
+        width: 100% !important;
+    }
+
+}
+
+
+/* END LOGO AND BANNER SECTION */
+
+/* =========================================== */
+
+
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+#game-board {
+    display: flex;
+    justify-content: space-around;
+    height: 60vh; /* Adjust this based on your layout */
+    position: relative;
+    margin-top: 30px;
+    overflow: hidden;
+    max-width: 95vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.column-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 18%; /* Adjust this based on your layout */
+}
+
+
+.day-label {
+    text-align: center;
+    padding: 10px 0;
+    font-weight: bold;
+    font-size: 20px;
+    width: 100%;
+}
+
+.active > .day-label{
+    /* Gradient from bottom to top */
+    color: white;
+    background: rgb(25,59,4);
+    background: linear-gradient(0deg, rgba(25,59,4,1) 0%, rgba(255,255,255,0) 100%);
+}
+
+.column {
+    background-color: #f0f0f0;
+    margin: 5px;
+    height: 100%;
+    position: relative;
+    border: 1px solid #ddd; /* Add a border to the columns */
+    /* overflow: hidden; */
+    width: 100%;
+}
+
+
+.time-slots {
+    position: absolute;
+    /* left: -60px; */
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    font-size: 20px;
+    color: #555;
+    pointer-events: none;
+    background-color: #fafafa;
+}
+
+.time-slot {
+    height: 10%;
+    display: flex;
+    padding-right: 5px;
+    pointer-events: none;
+}
+
+.pre-hours {
+    background-color: rgba(85, 107, 47, 0.2) !important;
+     background: repeating-linear-gradient(
+         45deg,
+        rgba(85, 107, 47, 0.2),
+        rgba(85, 107, 47, 0.2) 2px,
+        #ffffff 2px,
+        #ffffff 4px
+    );
+}
+
+.lunch-hours {
+    background-color: rgba(85, 107, 47, 0.2) !important;
+     background: repeating-linear-gradient(
+         45deg,
+        rgba(85, 107, 47, 0.2),
+        rgba(85, 107, 47, 0.2) 2px,
+        #ffffff 2px,
+        #ffffff 4px
+    );
+}
+
+.post-hours {
+    background-color: rgba(85, 107, 47, 0.2) !important;
+     background: repeating-linear-gradient(
+         45deg,
+        rgba(85, 107, 47, 0.2),
+        rgba(85, 107, 47, 0.2) 2px,
+        #ffffff 2px,
+        #ffffff 4px
+    );
+}
+
+
+.horizontal-line {
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #999;
+    top: 40px;
+    z-index: -1;
+}
+
+.block {
+    border-radius: 5px;
+    position: absolute;
+    width: 100%; /* Adjust this based on your layout */
+    background-color: #e3b3cc; /* Example pastel color */
+    border-radius: 5px; /* Add rounded corners */
+    overflow-y: hidden;
+}
+
+.triple-meeting::before,
+.triple-meeting::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2%; /* Change this to adjust the thickness of the lines */
+    background: white;
+}
+
+.triple-meeting::before {
+    left: 33%;
+}
+
+.triple-meeting::after {
+    left: 66%;
+}
+
+
+.same-day-follow-up::before,
+.same-day-follow-up::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2%; /* Change this to adjust the thickness of the lines */
+    background: white;
+}
+
+.same-day-follow-up::before {
+    top: 48%;
+}
+
+.same-day-follow-up::after {
+    top: 52%;
+}
+
+
+
+
+.dragging {
+    position: absolute !important;
+    width: 50vw !important;
+    box-sizing: border-box;
+    box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.2); /* Horizontal shadow, vertical shadow, blur, color */
+}
+
+
+
+
+
+
+.working-hours {
+    background-color: white;
+}
+
+.working-hours .time-slots > .time-slot:nth-child(-n+3) {
+    background-color: inherit; /* Restore default background color for time slots before 9am */
+}
+
+.inexorable-passage-of-time {
+    position: absolute;
+    width: 100%;
+    background-color: rgb(85, 107, 47,0.8); /* semi-transparent green */
+    z-index: 100;
+    pointer-events: none;
+    top: 0;
+    transition-timing-function: linear;
+    transition-duration: 0.2s;
+}
+
+.overlay {
+    position: absolute;
+    width: 100%;
+    background-color: rgba(128, 128, 128, 0.5); /* semi-transparent grey */
+    z-index: 10;
+}
+
+.overlay-before {
+    height: 20%; /* 8am is at 1/3 of the day */
+    top: 0;
+    pointer-events: none;
+}
+
+.overlay-after {
+    height: 27%; /* 4pm is at 2/3 of the day */
+    bottom: 0;
+    pointer-events: none;
+}
+
+
+
+#unscheduled-label {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    background-color: darkolivegreen;
+    color: white;
+    padding: 10px 20px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    width: 50vh;
+}
+
+
+
+#incoming-blocks {
+    margin-top: 5vw;
+    margin-left: 10%;
+    width: 12%;
+    height: 50vh;
+    position: relative;
+    background-color: white; /*added background for visibility*/
+}
+
+
+#incoming-blocks > div {
+    display: block;
+    margin-bottom: 10px;
+}
+
+
+/* Counters and progress bars */
+#counters {
+    position: absolute;
+    display: block;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    color: red;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 40px; /* Increased height to accommodate text */
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    position: relative;
+}
+
+.progress-bar-container h2 {
+    z-index: 1; /* Ensure text is above progress bar */
+}
+
+.visible-progress-bar {
+    height: 10px; /* Adjusted height to match original progress bar height */
+    width: 0%;
+    background-color: darkolivegreen;
+    border-radius: 5px;
+    transition: width 0.5s;
+    position: absolute;
+    bottom: 0; /* Position at bottom of container */
+    color: white;
+    overflow-x: hidden;
+    border: 2px solid olive;
+}
+
+.alert-progress-bar{
+    background-color: darkred !important;
+}
+
+
+.interactive-button {
+    display: inline-block;
+    width: 80%;
+    margin: 20px auto auto 10%;
+    padding: 10px 0;
+    background-color: darkolivegreen; /* You can choose your own color */
+    color: white;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Shadow for 3D effect */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Animation for hover effect */
+    -webkit-user-select: none;  /* Chrome, Safari, Opera */
+    -moz-user-select: none;     /* Firefox */
+    -ms-user-select: none;      /* IE 10+/ Edge */
+    user-select: none;          /* Standard syntax */
+}
+
+.interactive-button:hover {
+    background-color: darkolivegreen; /* Darker shade for hover effect */
+    transform: scale(1.05); /* Slightly enlarges button on hover */
+}
+
+.interactive-button:active {
+    transform: scale(0.95); /* Slightly shrinks button on click */
+}
+
+
+
+/* Weekly recurring */
+
+
+
+/* Heavy meetings */
+.heavy {
+    background-color: black !important;
+    color: white !important;
+}
+
+
+/* Initial overlay */
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 9999;
+}
+
+/* Intro section styling */
+
+#starting-logo{
+    max-height: 15vh;
+}
+
+#start-screen{
+    display: block;
+    position: absolute;
+    top: 10px;
+    /* max-height: 60vh; */
+    /* overflow: scroll; */
+    pointer-events: all !important;
+}
+
+#scrolling-info{
+    display: block;
+    max-height: 60vh;
+    overflow: scroll;
+    pointer-events: all !important;
+}
+
+#intro-descriptor{
+    display: block;
+    max-height: 60vh;
+    overflow: scroll;
+    pointer-events: all !important;
+}
+
+#start-button {
+    font-size: 2em;
+    padding: 20px;
+}
+
+.tabs {
+    position: relative;
+}
+
+.tabs input[type="radio"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.tabs label {
+    display: inline-block;
+    padding: 10px;
+    background: darkolivegreen;
+    color: white;
+    cursor: pointer;
+    border-top-left-radius: 10px;  /* Adjust as needed */
+    border-top-right-radius: 10px; /* Adjust as needed */
+}
+
+.tabs .content {
+    display: none;
+    padding: 20px;
+    background: #eee;
+    width: 80vw;
+    max-height: 40vh;
+    overflow-y: scroll;
+    margin: auto;
+}
+
+.tabs #tab1:checked ~ #content1,
+.tabs #tab2:checked ~ #content2,
+.tabs #tab3:checked ~ #content3,
+.tabs #tab4:checked ~ #content4 {
+    display: block;
+}
+
+.tabs input[type="radio"]:checked + label {
+    background: #ccc;
+    color: darkolivegreen;
+}
+
+
+/* End of intro section styling */
+
+
+/* CSS for countdown */
+
+#countdown {
+    display: none;
+    width: 50vw;
+}
+
+#calendar-clash-countdown{
+    position: fixed;
+    visibility: hidden;
+    z-index: 9999;
+    width: 30vw;
+    height: 25vh;
+    top: 40px;
+    right: 10px;
+}
+
+
+
+
+
+/* Blocked off times */
+.blocked-out{
+    background-color: #555 !important;
+}
+
+.blocked-out-personal{
+    background-color: #555 !important;
+}
+
+/* Styling for other blocks when there is an overlap */
+.grey-out { opacity: 0.5; background-color: grey; }
+
+
+
+/* Level complete styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    font-size: larger;
+}
+
+.modal-content {
+    /* background-color: #fefefe; */
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.con-but {
+    font-size: large;
+}
+
